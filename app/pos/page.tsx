@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getProducts } from "@/app/actions/product";
 import POSClient from "@/components/POSClient";
 import { auth } from "@/auth";
@@ -13,7 +14,9 @@ export default async function POSPage() {
                 <h1 style={{ margin: 0 }}>Bán hàng (POS)</h1>
             </header>
 
-            <POSClient products={products} userId={userId} />
+            <Suspense fallback={<div>Đang tải...</div>}>
+                <POSClient products={products} userId={userId} />
+            </Suspense>
         </div>
     );
 }

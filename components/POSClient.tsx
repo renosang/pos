@@ -1,15 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { processSale } from "@/app/actions/sale";
 import BarcodeScanner from "./BarcodeScanner";
 
 export default function POSClient({ products, userId }: { products: any[], userId: string }) {
+    const searchParams = useSearchParams();
     const [cart, setCart] = useState<any[]>([]);
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(false);
     const [showScanner, setShowScanner] = useState(false);
     const [lastScanned, setLastScanned] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (searchParams && searchParams.get("scanner") === "true") {
+            setShowScanner(true);
+        }
+    }, [searchParams]);
 
     const handleScanSuccess = (barcode: string) => {
         if (barcode === lastScanned) return; // Prevent double scan
