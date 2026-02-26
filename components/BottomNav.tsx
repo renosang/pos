@@ -31,11 +31,11 @@ export default function BottomNav({ session }: { session: any }) {
     if (!session || !isMounted) return null;
 
     const navItems = [
-        { id: "home", href: "/", icon: <LayoutDashboard size={24} />, label: "Tổng quan" },
-        { id: "sales", href: "/sales", icon: <Receipt size={24} />, label: "Hóa đơn" },
-        { id: "scan", icon: <Scan size={28} />, label: "Quét mã" },
-        { id: "inventory", href: "/inventory", icon: <Box size={24} />, label: "Tồn kho" },
-        { id: "more", icon: <MoreHorizontal size={24} />, label: "Thêm" },
+        { id: "home", href: "/", icon: <LayoutDashboard strokeWidth={1.5} size={24} />, label: "Tổng quan" },
+        { id: "sales", href: "/sales", icon: <Receipt strokeWidth={1.5} size={24} />, label: "Hóa đơn" },
+        { id: "scan", icon: <Scan strokeWidth={1.5} size={24} />, label: "Quét mã" },
+        { id: "inventory", href: "/inventory", icon: <Box strokeWidth={1.5} size={24} />, label: "Tồn kho" },
+        { id: "more", icon: <MoreHorizontal strokeWidth={1.5} size={24} />, label: "Thêm" },
     ];
 
     const getActiveIndex = () => {
@@ -75,12 +75,12 @@ export default function BottomNav({ session }: { session: any }) {
                     </div>
                     <div className="menu-grid">
                         {[
-                            { href: "/products", icon: <Package size={20} />, label: "Sản phẩm" },
-                            { href: "/products/categories", icon: <Folder size={20} />, label: "Danh mục" },
-                            { href: "/inventory/adjustment", icon: <ClipboardCheck size={20} />, label: "Kiểm kê" },
-                            { href: "/purchases", icon: <Truck size={20} />, label: "Nhập hàng" },
-                            { href: "/suppliers", icon: <Building2 size={20} />, label: "Nhà cung cấp" },
-                            { href: "/reports", icon: <TrendingUp size={20} />, label: "Báo cáo" },
+                            { href: "/products", icon: <Package strokeWidth={1.5} size={22} />, label: "Sản phẩm" },
+                            { href: "/products/categories", icon: <Folder strokeWidth={1.5} size={22} />, label: "Danh mục" },
+                            { href: "/inventory/adjustment", icon: <ClipboardCheck strokeWidth={1.5} size={22} />, label: "Kiểm kê" },
+                            { href: "/purchases", icon: <Truck strokeWidth={1.5} size={22} />, label: "Nhập hàng" },
+                            { href: "/suppliers", icon: <Building2 strokeWidth={1.5} size={22} />, label: "Nhà cung cấp" },
+                            { href: "/reports", icon: <TrendingUp strokeWidth={1.5} size={22} />, label: "Báo cáo" },
                         ].map((item) => (
                             <Link
                                 key={item.href}
@@ -97,62 +97,39 @@ export default function BottomNav({ session }: { session: any }) {
             </div>
 
             <nav className="bottom-nav show-mobile">
-                <div className="m-nav-wrapper">
-                    {/* SVG background with dynamic convex wave (bulge) */}
-                    <div className="m-nav-bg">
-                        <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-                            <path
-                                d={activeIndex === -1 ? "M 0,30 L 0,10 L 100,10 L 100,30 Z" :
-                                    `M 0,30 L 0,10 
-                                    H ${activeIndex * 20 + 1.5}
-                                    C ${activeIndex * 20 + 5},10 ${activeIndex * 20 + 6},-2 ${activeIndex * 20 + 10},-2
-                                    C ${activeIndex * 20 + 14},-2 ${activeIndex * 20 + 15},10 ${activeIndex * 20 + 18.5},10
-                                    H 100
-                                    L 100,30 Z`}
-                                fill="white"
-                            />
-                        </svg>
-                    </div>
-
-                    <div className="m-nav-items">
+                <div className="minimal-nav-container">
+                    <div className="nav-items-grid">
                         {navItems.map((item, idx) => {
                             const isActive = activeIndex === idx;
 
                             const content = (
                                 <>
-                                    <div className="m-icon-container">
-                                        <div className="m-icon-circle">
+                                    <div className="nav-icon-wrapper">
+                                        <div className="nav-icon-circle">
                                             {item.icon}
                                         </div>
                                     </div>
-                                    <span className="m-label">{item.label}</span>
+                                    <span className="nav-text-label">{item.label}</span>
                                 </>
                             );
 
-                            if (item.href && item.id !== "scan") {
-                                return (
-                                    <Link
-                                        key={item.id}
-                                        href={item.href}
-                                        className={`m-nav-slot ${isActive ? 'active' : ''}`}
-                                        onClick={() => handleNavClick(item)}
-                                    >
-                                        {content}
-                                    </Link>
-                                );
-                            }
-
                             return (
-                                <button
-                                    key={item.id}
-                                    className={`m-nav-slot ${isActive ? 'active' : ''}`}
-                                    onClick={() => handleNavClick(item)}
-                                >
-                                    {content}
-                                </button>
+                                <div key={item.id} className={`nav-item-slot ${isActive ? 'active' : ''}`}>
+                                    {item.href && item.id !== "scan" ? (
+                                        <Link href={item.href} className="nav-action-area" onClick={() => handleNavClick(item)}>
+                                            {content}
+                                        </Link>
+                                    ) : (
+                                        <button className="nav-action-area" onClick={() => handleNavClick(item)}>
+                                            {content}
+                                        </button>
+                                    )}
+                                </div>
                             );
                         })}
                     </div>
+                    {/* iOS style home indicator stub */}
+                    <div className="home-indicator"></div>
                 </div>
             </nav>
 
@@ -162,108 +139,104 @@ export default function BottomNav({ session }: { session: any }) {
                     bottom: 0;
                     left: 0;
                     right: 0;
-                    height: calc(85px + env(safe-area-inset-bottom));
                     z-index: 1000;
+                    background: transparent;
                     display: flex;
                     justify-content: center;
-                    pointer-events: none;
+                    padding: 0 16px 12px 16px;
                 }
 
-                .m-nav-wrapper {
+                .minimal-nav-container {
                     width: 100%;
-                    height: 100%;
+                    max-width: 500px;
+                    background: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(20px);
+                    -webkit-backdrop-filter: blur(20px);
+                    border-radius: 28px;
+                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    padding-bottom: 8px;
                     position: relative;
-                    pointer-events: auto;
                 }
 
-                .m-nav-bg {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    filter: drop-shadow(0 -10px 25px rgba(0,0,0,0.1));
-                }
-
-                .m-nav-bg svg {
-                    width: 100%;
-                    height: 100%;
-                }
-
-                .m-nav-bg path {
-                    transition: d 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                }
-
-                .m-nav-items {
+                .nav-items-grid {
                     display: grid;
                     grid-template-columns: repeat(5, 1fr);
-                    height: 100%;
+                    height: 80px;
                     position: relative;
-                    z-index: 2;
-                    padding-bottom: env(safe-area-inset-bottom);
                 }
 
-                .m-nav-slot {
-                    display: flex !important;
-                    flex-direction: column !important;
-                    align-items: center !important;
-                    justify-content: flex-end !important;
-                    padding: 0 0 15px 0 !important;
-                    background: none !important;
-                    border: none !important;
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    text-decoration: none !important;
-                    color: #94a3b8 !important;
+                .nav-item-slot {
+                    position: relative;
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .nav-action-area {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
                     width: 100%;
-                    position: relative;
+                    background: none;
+                    border: none;
+                    padding: 0;
+                    text-decoration: none;
+                    gap: 6px;
+                    transition: all 0.3s ease;
                 }
 
-                .m-icon-container {
-                    position: relative;
-                    height: 48px;
+                .nav-icon-wrapper {
+                    height: 40px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    margin-bottom: 2px;
                 }
 
-                .m-icon-circle {
-                    width: 48px;
-                    height: 48px;
+                .nav-icon-circle {
+                    width: 40px;
+                    height: 40px;
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                    background: transparent;
+                    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+                    color: #94a3b8;
                 }
 
-                .m-nav-slot.active .m-icon-circle {
-                    transform: translateY(-50px);
+                .nav-item-slot.active .nav-icon-circle {
                     background: var(--primary);
                     color: white;
-                    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+                    transform: translateY(-24px);
+                    box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+                    width: 54px;
+                    height: 54px;
                     border: 4px solid white;
                 }
 
-                .m-nav-slot:nth-child(3).active .m-icon-circle {
+                .nav-item-slot:nth-child(3).active .nav-icon-circle {
                     background: linear-gradient(135deg, var(--primary), var(--accent));
                 }
 
-                .m-label {
-                    font-size: 0.65rem !important;
-                    font-weight: 800 !important;
-                    transition: all 0.3s !important;
-                    color: #64748b !important;
-                    white-space: nowrap !important;
-                    display: block !important;
-                    text-align: center !important;
+                .nav-text-label {
+                    font-size: 0.65rem;
+                    font-weight: 500;
+                    color: #64748b;
+                    transition: all 0.3s ease;
                 }
 
-                .m-nav-slot.active .m-label {
-                    color: var(--primary) !important;
-                    font-weight: 950 !important;
-                    transform: translateY(-12px);
+                .nav-item-slot.active .nav-text-label {
+                    color: var(--primary);
+                    font-weight: 700;
+                    transform: translateY(-8px);
+                }
+
+                .home-indicator {
+                    width: 40px;
+                    height: 4px;
+                    background: rgba(0, 0, 0, 0.1);
+                    border-radius: 2px;
+                    margin: 2px auto 6px auto;
                 }
 
                 /* More Menu Styling */
@@ -273,9 +246,9 @@ export default function BottomNav({ session }: { session: any }) {
                     left: 0;
                     right: 0;
                     bottom: 0;
-                    background: rgba(15, 23, 42, 0.6);
-                    backdrop-filter: blur(12px);
-                    -webkit-backdrop-filter: blur(12px);
+                    background: rgba(15, 23, 42, 0.4);
+                    backdrop-filter: blur(10px);
+                    -webkit-backdrop-filter: blur(10px);
                     z-index: 2000;
                     opacity: 0;
                     visibility: hidden;
@@ -297,7 +270,7 @@ export default function BottomNav({ session }: { session: any }) {
                     padding: 3.5rem 2rem;
                     transform: translateY(100%);
                     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-                    box-shadow: 0 -20px 50px rgba(0,0,0,0.15);
+                    box-shadow: 0 -20px 50px rgba(0,0,0,0.1);
                 }
 
                 .more-menu-overlay.open .more-menu-content {
@@ -309,12 +282,11 @@ export default function BottomNav({ session }: { session: any }) {
                     justify-content: space-between;
                     align-items: center;
                     margin-bottom: 2.5rem;
-                    padding: 0 0.5rem;
                 }
 
                 .menu-header h3 {
                     font-size: 1.5rem;
-                    font-weight: 950;
+                    font-weight: 800;
                     color: var(--text-main);
                     letter-spacing: -0.02em;
                 }
@@ -324,11 +296,6 @@ export default function BottomNav({ session }: { session: any }) {
                     padding: 10px;
                     background: var(--surface-secondary);
                     border-radius: 50%;
-                    transition: 0.2s;
-                }
-
-                .close-btn:active {
-                    transform: scale(0.9);
                 }
 
                 .menu-grid {
@@ -347,34 +314,27 @@ export default function BottomNav({ session }: { session: any }) {
                     transition: all 0.2s;
                 }
 
-                .menu-item:active {
-                    transform: scale(0.95);
-                }
-
                 .menu-icon {
-                    width: 64px;
-                    height: 64px;
-                    border-radius: 22px;
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 20px;
                     background: var(--surface-secondary);
                     color: var(--text-main);
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
                     transition: all 0.2s;
                 }
 
                 .menu-item.active .menu-icon {
                     background: var(--primary);
                     color: white;
-                    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.25);
                 }
 
                 .menu-item span {
                     font-size: 0.8125rem;
-                    font-weight: 850;
+                    font-weight: 600;
                     text-align: center;
-                    line-height: 1.2;
                 }
 
                 @media (min-width: 769px) {
