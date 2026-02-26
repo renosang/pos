@@ -133,35 +133,34 @@ export default function InventoryList({ inventory }: { inventory: any[] }) {
     return (
         <div style={{ position: 'relative' }}>
             {/* Filter Bar */}
-            <div className="glass-card" style={{ marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1.25rem', alignItems: 'center', padding: '1rem 1.5rem' }}>
-                <div style={{ flex: '1', minWidth: '300px', position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+            <div className="filter-bar glass-card">
+                <div className="search-wrapper">
+                    <span className="search-icon">🔍</span>
                     <input
                         className="input"
-                        placeholder="Tìm theo tên sản phẩm, SKU hoặc Barcode..."
-                        style={{ paddingLeft: '2.5rem' }}
+                        placeholder="Tìm theo tên, SKU hoặc Barcode..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 850, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Nhóm:</label>
-                        <select className="input" style={{ width: 'auto', minWidth: '140px', padding: '0.5rem' }} value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+                <div className="filter-options">
+                    <div className="filter-field">
+                        <label>Nhóm:</label>
+                        <select className="input" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
                             <option value="">Tất cả</option>
                             {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 850, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Hiệu:</label>
-                        <select className="input" style={{ width: 'auto', minWidth: '140px', padding: '0.5rem' }} value={filterBrand} onChange={(e) => setFilterBrand(e.target.value)}>
+                    <div className="filter-field">
+                        <label>Hiệu:</label>
+                        <select className="input" value={filterBrand} onChange={(e) => setFilterBrand(e.target.value)}>
                             <option value="">Tất cả</option>
                             {brands.map((b: any) => <option key={b} value={b}>{b}</option>)}
                         </select>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 850, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Tồn:</label>
-                        <select className="input" style={{ width: 'auto', minWidth: '140px', padding: '0.5rem' }} value={filterStockStatus} onChange={(e) => setFilterStockStatus(e.target.value)}>
+                    <div className="filter-field">
+                        <label>Tồn:</label>
+                        <select className="input" value={filterStockStatus} onChange={(e) => setFilterStockStatus(e.target.value)}>
                             <option value="all">Tất cả</option>
                             <option value="low">Sắp hết</option>
                             <option value="out">Hết hàng</option>
@@ -385,6 +384,22 @@ export default function InventoryList({ inventory }: { inventory: any[] }) {
             <style jsx>{`
                 .inventory-container { display: flex; flex-direction: column; gap: 2rem; }
                 
+                .filter-bar { 
+                    margin-bottom: 1.5rem; 
+                    display: flex; 
+                    flex-wrap: wrap; 
+                    gap: 1.25rem; 
+                    align-items: center; 
+                    padding: 1rem 1.5rem; 
+                }
+                .search-wrapper { flex: 1; min-width: 300px; position: relative; }
+                .search-icon { position: absolute; left: 1rem; top: 50%; transform: translatey(-50%); opacity: 0.5; }
+                .search-wrapper .input { padding-left: 2.5rem; }
+                .filter-options { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+                .filter-field { display: flex; align-items: center; gap: 0.5rem; }
+                .filter-field label { font-size: 0.75rem; font-weight: 850; color: var(--text-muted); text-transform: uppercase; }
+                .filter-field .input { width: auto; min-width: 140px; padding: 0.5rem; }
+
                 .product-group-card {
                     background: white;
                     border-radius: 16px;
@@ -430,8 +445,8 @@ export default function InventoryList({ inventory }: { inventory: any[] }) {
                 .p-stat label { font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; opacity: 0.8; }
                 .p-stat span { font-size: 1.1rem; }
 
-                .variant-grid-wrapper { padding: 0.5rem 1rem 1.5rem; }
-                .v-fixed-table { width: 100%; border-collapse: separate; border-spacing: 0 0.25rem; table-layout: fixed; }
+                .variant-grid-wrapper { padding: 0.5rem 1rem 1.5rem; overflow-x: auto; }
+                .v-fixed-table { width: 100%; border-collapse: separate; border-spacing: 0 0.25rem; min-width: 600px; }
                 .v-fixed-table th { padding: 0.75rem 1rem; font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em; }
                 
                 .v-item-row { cursor: pointer; transition: background 0.2s; }
@@ -497,10 +512,23 @@ export default function InventoryList({ inventory }: { inventory: any[] }) {
                 @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
                 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-                @media (max-width: 600px) {
-                    .p-stats-row { display: none; }
-                    .v-fixed-table th:nth-child(2), .v-fixed-table td:nth-child(2),
-                    .v-fixed-table th:nth-child(3), .v-fixed-table td:nth-child(3) { display: none; }
+                @media (max-width: 768px) {
+                    .filter-bar { padding: 1rem; gap: 0.75rem; flex-direction: column; align-items: stretch; }
+                    .search-wrapper { min-width: 100%; }
+                    .filter-options { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+                    .filter-field { flex-direction: column; align-items: flex-start; }
+                    .filter-field .input { width: 100%; }
+                    
+                    .product-info-bar { padding: 1rem; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+                    .p-stats-row { width: 100%; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.75rem; }
+                    .p-main-content { gap: 0.75rem; }
+                    .p-img-box { width: 40px; height: 40px; }
+                    .p-text h3 { font-size: 1rem; }
+                    
+                    .v-fixed-table { min-width: 450px; }
+                    .v-fixed-table th, .v-cell { padding: 0.5rem; }
+                    .v-fixed-table th:nth-child(2), .v-cell:nth-child(2),
+                    .v-fixed-table th:nth-child(3), .v-cell:nth-child(3) { display: none; }
                 }
             `}</style>
         </div>

@@ -739,8 +739,26 @@ export default function POSClient({ products, userId }: { products: any[], userI
                 @media (max-width: 768px) {
                     .hide-mobile { display: none !important; }
                     .show-mobile { display: block; }
-                    .product-grid { grid-template-columns: repeat(2, 1fr); }
-                    .pos-header { padding: 0.5rem; }
+                    .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+                    .pos-header { padding: 0.5rem; gap: 0.5rem; }
+                    .search-box input { padding: 0.6rem 0.5rem; font-size: 0.85rem; }
+                    .scanner-toggle { height: 40px; width: 40px; }
+                    
+                    .p-name { font-size: 0.75rem; height: 2rem; -webkit-line-clamp: 2; margin: 0; }
+                    .p-details { margin: 0.2rem 0; }
+                    .p-variant { font-size: 0.65rem; }
+                    .p-price { font-size: 0.85rem; }
+                    .stock-badge { font-size: 0.6rem; padding: 0.1rem 0.3rem; }
+                    
+                    .item-name { font-size: 0.75rem; }
+                    .item-meta { font-size: 0.65rem; }
+                    .item-price { font-size: 0.75rem; }
+                    .qty-control span { font-size: 0.75rem; }
+                    .qty-control button { width: 22px; height: 22px; font-size: 0.7rem; }
+                    
+                    .floating-cart-btn { padding: 10px 18px; bottom: 100px; right: 15px; }
+                    .cart-amount { font-size: 0.85rem; padding-left: 10px; }
+                    .cart-badge { width: 20px; height: 20px; font-size: 0.65rem; }
                 }
 
                 :global(html, body) {

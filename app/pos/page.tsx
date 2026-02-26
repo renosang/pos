@@ -10,8 +10,10 @@ export default async function POSPage() {
 
     return (
         <div className="animate-fade-in">
-            <header style={{ marginBottom: '1rem' }}>
-                <h1 style={{ margin: 0 }}>Bán hàng (POS)</h1>
+            <header className="page-header">
+                <div className="header-content">
+                    <h1 className="page-title">Bán hàng (POS)</h1>
+                </div>
             </header>
 
             <Suspense fallback={<div>Đang tải...</div>}>

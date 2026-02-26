@@ -6,9 +6,11 @@ export default async function InventoryPage() {
 
     return (
         <div className="animate-fade-in">
-            <header style={{ marginBottom: '2rem' }}>
-                <h1 style={{ margin: 0 }}>Quản lý kho hàng</h1>
-                <p style={{ color: 'var(--text-muted)' }}>Theo dõi số lượng tồn kho và điều chỉnh hàng hóa</p>
+            <header className="page-header">
+                <div className="header-content">
+                    <h1 className="page-title">Quản lý kho hàng</h1>
+                    <p className="welcome-text">Theo dõi tồn kho và điều chỉnh hàng hóa</p>
+                </div>
             </header>
 
             <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', marginBottom: '2rem' }}>
