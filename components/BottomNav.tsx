@@ -31,20 +31,20 @@ export default function BottomNav({ session }: { session: any }) {
     if (!session || !isMounted) return null;
 
     const navItems = [
-        { id: "home", href: "/", icon: <LayoutDashboard strokeWidth={1.5} size={24} />, label: "Tổng quan" },
         { id: "sales", href: "/sales", icon: <Receipt strokeWidth={1.5} size={24} />, label: "Hóa đơn" },
-        { id: "scan", icon: <Scan strokeWidth={1.5} size={24} />, label: "Quét mã" },
         { id: "inventory", href: "/inventory", icon: <Box strokeWidth={1.5} size={24} />, label: "Tồn kho" },
+        { id: "home", href: "/", icon: <LayoutDashboard strokeWidth={1.5} size={24} />, label: "Tổng quan" },
+        { id: "scan", icon: <Scan strokeWidth={1.5} size={24} />, label: "Quét mã" },
         { id: "more", icon: <MoreHorizontal strokeWidth={1.5} size={24} />, label: "Thêm" },
     ];
 
     const getActiveIndex = () => {
         if (isMenuOpen) return 4;
-        if (pathname === "/pos" || pathname.includes("/pos")) return 2;
-        if (pathname === "/sales") return 1;
-        if (pathname === "/inventory" || pathname.includes("/inventory")) return 3;
-        if (pathname === "/" || pathname === "/dashboard") return 0;
-        if (pathname.includes("/products")) return 3;
+        if (pathname === "/pos" || pathname.includes("/pos")) return 3;
+        if (pathname === "/sales") return 0;
+        if (pathname === "/inventory" || pathname.includes("/inventory")) return 1;
+        if (pathname === "/" || pathname === "/dashboard") return 2;
+        if (pathname.includes("/products")) return 1;
         if (pathname.includes("/purchases")) return 4;
         return -1;
     };
