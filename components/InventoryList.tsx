@@ -133,41 +133,40 @@ export default function InventoryList({ inventory }: { inventory: any[] }) {
     return (
         <div style={{ position: 'relative' }}>
             {/* Filter Bar */}
-            <div className="glass-card" style={{ marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1.25rem', alignItems: 'flex-end' }}>
-                <div style={{ flex: '1', minWidth: '240px' }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.4rem', display: 'block' }}>TÌM KIẾM</label>
-                    <div style={{ position: 'relative' }}>
-                        <span style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
-                        <input
-                            className="input"
-                            placeholder="Tên, SKU, Barcode..."
-                            style={{ paddingLeft: '2.5rem' }}
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+            <div className="glass-card" style={{ marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1.25rem', alignItems: 'center', padding: '1rem 1.5rem' }}>
+                <div style={{ flex: '1', minWidth: '300px', position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+                    <input
+                        className="input"
+                        placeholder="Tìm theo tên sản phẩm, SKU hoặc Barcode..."
+                        style={{ paddingLeft: '2.5rem' }}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 850, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Nhóm:</label>
+                        <select className="input" style={{ width: 'auto', minWidth: '140px', padding: '0.5rem' }} value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+                            <option value="">Tất cả</option>
+                            {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        </select>
                     </div>
-                </div>
-                <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.4rem', display: 'block' }}>NHÓM</label>
-                    <select className="input" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
-                        <option value="">Tất cả nhóm</option>
-                        {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                    </select>
-                </div>
-                <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.4rem', display: 'block' }}>THƯƠNG HIỆU</label>
-                    <select className="input" value={filterBrand} onChange={(e) => setFilterBrand(e.target.value)}>
-                        <option value="">Tất cả hiệu</option>
-                        {brands.map((b: any) => <option key={b} value={b}>{b}</option>)}
-                    </select>
-                </div>
-                <div>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.4rem', display: 'block' }}>TRẠNG THÁI</label>
-                    <select className="input" value={filterStockStatus} onChange={(e) => setFilterStockStatus(e.target.value)}>
-                        <option value="all">Tất cả</option>
-                        <option value="low">Sắp hết hàng</option>
-                        <option value="out">Hết hàng</option>
-                    </select>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 850, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Hiệu:</label>
+                        <select className="input" style={{ width: 'auto', minWidth: '140px', padding: '0.5rem' }} value={filterBrand} onChange={(e) => setFilterBrand(e.target.value)}>
+                            <option value="">Tất cả</option>
+                            {brands.map((b: any) => <option key={b} value={b}>{b}</option>)}
+                        </select>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 850, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Tồn:</label>
+                        <select className="input" style={{ width: 'auto', minWidth: '140px', padding: '0.5rem' }} value={filterStockStatus} onChange={(e) => setFilterStockStatus(e.target.value)}>
+                            <option value="all">Tất cả</option>
+                            <option value="low">Sắp hết</option>
+                            <option value="out">Hết hàng</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -210,15 +209,15 @@ export default function InventoryList({ inventory }: { inventory: any[] }) {
                                 </div>
 
                                 <div className="variant-grid-wrapper">
-                                    <table className="v-fixed-table">
+                                    <table className="v-fixed-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                         <thead>
                                             <tr>
-                                                <th style={{ width: '25%', textAlign: 'left', paddingLeft: '2rem' }}>Phân loại</th>
-                                                <th style={{ width: '20%', textAlign: 'left' }}>Mã SKU</th>
-                                                <th style={{ width: '15%', textAlign: 'left' }}>Vị trí</th>
-                                                <th style={{ width: '15%', textAlign: 'left' }}>Tồn kho</th>
-                                                <th style={{ width: '15%', textAlign: 'left' }}>Hàng lỗi</th>
-                                                <th style={{ width: '10%', textAlign: 'left' }}></th>
+                                                <th style={{ textAlign: 'left', paddingLeft: '2rem' }}>Phân loại</th>
+                                                <th style={{ textAlign: 'left' }}>Mã SKU</th>
+                                                <th style={{ textAlign: 'left' }}>Vị trí</th>
+                                                <th style={{ textAlign: 'left' }}>Tồn kho</th>
+                                                <th style={{ textAlign: 'left' }}>Hàng lỗi</th>
+                                                <th style={{ textAlign: 'right', paddingRight: '2rem' }}>Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -229,7 +228,7 @@ export default function InventoryList({ inventory }: { inventory: any[] }) {
                                                         <span className="v-val-text">{v.color || "-"} / {v.size || "-"}</span>
                                                     </td>
                                                     <td className="v-cell" style={{ textAlign: 'left' }}>
-                                                        <span className="sku-label">{v.skuCode || "N/A"}</span>
+                                                        <span className="sku-code">{v.skuCode || "N/A"}</span>
                                                     </td>
                                                     <td className="v-cell" style={{ textAlign: 'left' }}>
                                                         <span className="loc-text">{v.location || "---"}</span>
@@ -244,8 +243,8 @@ export default function InventoryList({ inventory }: { inventory: any[] }) {
                                                             {v.defectiveQty || 0}
                                                         </div>
                                                     </td>
-                                                    <td className="v-cell" style={{ textAlign: 'left' }}>
-                                                        <button className="btn-action-small">Chi tiết</button>
+                                                    <td className="v-cell" style={{ textAlign: 'right', paddingRight: '2rem' }}>
+                                                        <button className="btn" style={{ background: 'rgba(99, 102, 241, 0.05)', fontSize: '0.7rem' }}>Chi tiết</button>
                                                     </td>
                                                 </tr>
                                             ))}

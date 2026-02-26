@@ -106,7 +106,7 @@ export default function ProductForm({ categories: initialCategories, initialProd
                     </h3>
                     <div className="form-grid">
                         <div className="input-field">
-                            <label>Tên sản phẩm *</label>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 850, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>Tên sản phẩm *</label>
                             <input
                                 className="input"
                                 value={formData.name}
@@ -116,7 +116,7 @@ export default function ProductForm({ categories: initialCategories, initialProd
                             />
                         </div>
                         <div className="input-field">
-                            <label>Nhóm sản phẩm *</label>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 850, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>Nhóm sản phẩm *</label>
                             <div style={{ display: 'flex', gap: '0.5rem' }}>
                                 {showNewCategory ? (
                                     <>
@@ -142,13 +142,13 @@ export default function ProductForm({ categories: initialCategories, initialProd
                                             <option value="">Chọn nhóm</option>
                                             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                         </select>
-                                        <button type="button" className="btn-icon" onClick={() => setShowNewCategory(true)} title="Thêm nhóm mới">+</button>
+                                        <button type="button" className="btn" style={{ background: 'var(--surface-secondary)', width: '40px', minWidth: '40px' }} onClick={() => setShowNewCategory(true)} title="Thêm nhóm mới">+</button>
                                     </>
                                 )}
                             </div>
                         </div>
                         <div className="input-field">
-                            <label>Thương hiệu</label>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 850, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>Thương hiệu</label>
                             <input
                                 className="input"
                                 value={formData.brand}
@@ -157,7 +157,7 @@ export default function ProductForm({ categories: initialCategories, initialProd
                             />
                         </div>
                         <div className="input-field">
-                            <label>Mã SKU *</label>
+                            <label style={{ fontSize: '0.75rem', fontWeight: 850, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>Mã SKU *</label>
                             <input
                                 className="input"
                                 value={formData.skuCode}

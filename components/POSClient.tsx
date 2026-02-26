@@ -245,42 +245,43 @@ export default function POSClient({ products, userId }: { products: any[], userI
             <style jsx>{`
                 .pos-container {
                     display: grid;
-                    grid-template-columns: 1fr 400px;
-                    gap: 1.5rem;
-                    height: calc(100vh - 140px);
+                    grid-template-columns: 1fr 340px;
+                    gap: 1rem;
+                    height: calc(100vh - 120px);
                 }
-
+ 
                 .pos-main {
                     display: flex;
                     flex-direction: column;
-                    gap: 1rem;
+                    gap: 0.75rem;
                     overflow: hidden;
                 }
-
+ 
                 .pos-header {
-                    padding: 1rem;
+                    padding: 0.75rem 1rem;
                     display: flex;
-                    gap: 1rem;
+                    gap: 0.75rem;
                     align-items: center;
                 }
-
+ 
                 .search-box {
                     flex: 1;
                     position: relative;
                 }
                 .search-icon {
                     position: absolute;
-                    left: 1rem;
+                    left: 0.75rem;
                     top: 50%;
                     transform: translateY(-50%);
                     opacity: 0.5;
+                    font-size: 0.9rem;
                 }
                 .search-box input {
                     width: 100%;
-                    padding: 0.75rem 1rem 0.75rem 2.5rem;
+                    padding: 0.6rem 1rem 0.6rem 2.2rem;
                     border: 1px solid #e2e8f0;
-                    border-radius: 12px;
-                    font-size: 0.95rem;
+                    border-radius: 10px;
+                    font-size: 0.85rem;
                     transition: 0.2s;
                 }
                 .search-box input:focus {
@@ -288,17 +289,17 @@ export default function POSClient({ products, userId }: { products: any[], userI
                     border-color: var(--primary);
                     box-shadow: 0 0 0 3px var(--primary-low);
                 }
-
+ 
                 .scanner-toggle {
                     background: #f1f5f9;
                     border: 1px solid #e2e8f0;
-                    padding: 0.75rem 1.25rem;
-                    border-radius: 12px;
+                    padding: 0.6rem 1rem;
+                    border-radius: 10px;
                     font-weight: 700;
                     cursor: pointer;
                     transition: 0.2s;
                     white-space: nowrap;
-                    font-size: 0.9rem;
+                    font-size: 0.8rem;
                     color: #475569;
                 }
                 .scanner-toggle:hover {
@@ -311,43 +312,43 @@ export default function POSClient({ products, userId }: { products: any[], userI
                     color: #ef4444;
                     border-color: #fecaca;
                 }
-
+ 
                 .scanner-container {
                     padding: 1rem;
                     animation: slideDown 0.3s forwards;
                 }
-
+ 
                 .product-grid {
                     flex: 1;
                     display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                    gap: 1rem;
+                    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                    gap: 0.75rem;
                     overflow-y: auto;
-                    padding: 0.5rem;
+                    padding: 0.25rem;
                 }
-
+ 
                 .product-card {
                     background: white;
-                    border-radius: 16px;
-                    padding: 0.75rem;
+                    border-radius: 12px;
+                    padding: 0.5rem;
                     cursor: pointer;
                     transition: all 0.2s;
                     border: 1px solid #f1f5f9;
                     display: flex;
                     flex-direction: column;
-                    gap: 0.75rem;
+                    gap: 0.5rem;
                 }
                 .product-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+                    transform: translateY(-3px);
+                    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
                     border-color: var(--primary-low);
                 }
-
+ 
                 .p-img-wrapper {
                     aspect-ratio: 1;
                     width: 100%;
                     background: #f8fafc;
-                    border-radius: 12px;
+                    border-radius: 8px;
                     overflow: hidden;
                     position: relative;
                 }
@@ -361,29 +362,29 @@ export default function POSClient({ products, userId }: { products: any[], userI
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 2.5rem;
+                    font-size: 1.8rem;
                 }
-
+ 
                 .stock-badge {
                     position: absolute;
-                    bottom: 0.5rem;
-                    right: 0.5rem;
+                    bottom: 0.4rem;
+                    right: 0.4rem;
                     background: rgba(255,255,255,0.9);
-                    padding: 0.2rem 0.5rem;
-                    border-radius: 6px;
-                    font-size: 0.7rem;
+                    padding: 0.15rem 0.4rem;
+                    border-radius: 4px;
+                    font-size: 0.65rem;
                     font-weight: 800;
                     color: #10b981;
                     backdrop-filter: blur(4px);
                 }
                 .stock-badge.low { color: #f59e0b; }
                 .stock-badge.out { color: #ef4444; background: #fee2e2; }
-
-                .p-info .p-cat { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--primary); opacity: 0.8; }
-                .p-name { margin: 0.25rem 0; font-size: 0.95rem; color: #1e293b; font-weight: 800; line-height: 1.2; }
-                .p-variant { font-size: 0.8rem; color: #64748b; font-weight: 500; }
-                .p-price { margin-top: 0.5rem; font-weight: 900; color: #0f172a; font-size: 1.05rem; }
-
+ 
+                .p-info .p-cat { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; color: var(--primary); opacity: 0.7; }
+                .p-name { margin: 0.15rem 0; font-size: 0.85rem; color: #1e293b; font-weight: 800; line-height: 1.2; }
+                .p-variant { font-size: 0.7rem; color: #64748b; font-weight: 500; }
+                .p-price { margin-top: 0.3rem; font-weight: 900; color: #0f172a; font-size: 0.9rem; }
+ 
                 .pos-sidebar {
                     display: flex;
                     flex-direction: column;
@@ -392,27 +393,28 @@ export default function POSClient({ products, userId }: { products: any[], userI
                     overflow: hidden;
                     background: white;
                     border: 1px solid #e2e8f0;
+                    border-radius: 16px;
                 }
-
+ 
                 .sidebar-header {
-                    padding: 1.5rem;
+                    padding: 0.75rem 1rem;
                     border-bottom: 1px solid #f1f5f9;
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
                 }
-                .sidebar-header h3 { margin: 0; font-size: 1.1rem; font-weight: 900; }
-                .clear-btn { background: none; border: none; color: #ef4444; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
-
+                .sidebar-header h3 { margin: 0; font-size: 0.95rem; font-weight: 900; }
+                .clear-btn { background: none; border: none; color: #ef4444; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+ 
                 .cart-list {
                     flex: 1;
                     overflow-y: auto;
-                    padding: 1.5rem;
+                    padding: 0.75rem 1rem;
                     display: flex;
                     flex-direction: column;
-                    gap: 1rem;
+                    gap: 0.5rem;
                 }
-
+ 
                 .empty-cart {
                     height: 100%;
                     display: flex;
@@ -422,49 +424,51 @@ export default function POSClient({ products, userId }: { products: any[], userI
                     color: #94a3b8;
                     opacity: 0.6;
                 }
-                .empty-cart .icon { font-size: 3rem; margin-bottom: 1rem; }
-
+                .empty-cart .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+ 
                 .cart-item {
                     display: flex;
                     justify-content: space-between;
-                    gap: 1rem;
-                    padding-bottom: 1rem;
+                    gap: 0.75rem;
+                    padding-bottom: 0.5rem;
                     border-bottom: 1px dashed #e2e8f0;
+                    align-items: center;
                 }
-                .item-name { font-size: 0.9rem; font-weight: 700; color: #1e293b; margin-bottom: 0.2rem; }
-                .item-meta { font-size: 0.75rem; color: #64748b; }
-                .item-price { font-weight: 800; color: var(--primary); font-size: 0.9rem; margin-top: 0.3rem; }
-
+                .item-name { font-size: 0.8rem; font-weight: 700; color: #1e293b; margin-bottom: 0.1rem; }
+                .item-meta { font-size: 0.7rem; color: #64748b; }
+                .item-price { font-weight: 800; color: var(--primary); font-size: 0.8rem; margin-top: 0.2rem; }
+ 
                 .qty-control {
                     display: flex;
                     align-items: center;
-                    gap: 0.5rem;
+                    gap: 0.4rem;
                 }
                 .qty-control button {
-                    width: 28px;
-                    height: 28px;
-                    border-radius: 8px;
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 6px;
                     border: 1px solid #e2e8f0;
                     background: #f8fafc;
                     font-weight: 700;
                     cursor: pointer;
+                    font-size: 0.8rem;
                 }
-                .qty-control button.remove { border-color: #fee2e2; color: #ef4444; margin-left: 0.25rem; }
-                .qty-control span { font-weight: 800; min-width: 20px; text-align: center; }
-
+                .qty-control button.remove { border-color: #fee2e2; color: #ef4444; margin-left: 0.15rem; }
+                .qty-control span { font-weight: 800; min-width: 18px; text-align: center; font-size: 0.8rem; }
+ 
                 .sidebar-footer {
-                    padding: 1.5rem;
+                    padding: 1rem;
                     background: #f8fafc;
                     border-top: 2px solid #e2e8f0;
                     display: flex;
                     flex-direction: column;
-                    gap: 0.75rem;
+                    gap: 0.5rem;
                 }
-
+ 
                 .summary-row {
                     display: flex;
                     justify-content: space-between;
-                    font-size: 0.95rem;
+                    font-size: 0.85rem;
                     color: #475569;
                     font-weight: 600;
                 }
@@ -473,45 +477,46 @@ export default function POSClient({ products, userId }: { products: any[], userI
                 .discount-input {
                     display: flex;
                     align-items: center;
-                    gap: 0.5rem;
+                    gap: 0.4rem;
                     background: white;
-                    padding-left: 0.75rem;
+                    padding-left: 0.5rem;
                     border: 1px solid #e2e8f0;
-                    border-radius: 8px;
-                    max-width: 140px;
+                    border-radius: 6px;
+                    max-width: 110px;
                 }
                 .discount-input input {
                     border: none;
                     width: 100%;
-                    padding: 0.4rem 0;
+                    padding: 0.3rem 0;
                     font-weight: 700;
                     text-align: right;
                     outline: none;
+                    font-size: 0.8rem;
                 }
-                .discount-input .currency { font-size: 0.75rem; color: #94a3b8; padding-right: 0.75rem; }
-
+                .discount-input .currency { font-size: 0.65rem; color: #94a3b8; padding-right: 0.5rem; }
+ 
                 .payment-selectors {
-                    margin-top: 0.5rem;
+                    margin-top: 0.25rem;
                 }
                 .payment-selectors label {
                     display: block;
-                    font-size: 0.75rem;
+                    font-size: 0.65rem;
                     font-weight: 800;
                     color: #94a3b8;
                     text-transform: uppercase;
-                    margin-bottom: 0.5rem;
+                    margin-bottom: 0.3rem;
                 }
                 .method-grid {
                     display: grid;
                     grid-template-columns: 1fr 1fr;
-                    gap: 0.5rem;
+                    gap: 0.4rem;
                 }
                 .method-grid button {
-                    padding: 0.6rem;
-                    border-radius: 8px;
+                    padding: 0.5rem;
+                    border-radius: 6px;
                     border: 1px solid #e2e8f0;
                     background: white;
-                    font-size: 0.75rem;
+                    font-size: 0.7rem;
                     font-weight: 700;
                     cursor: pointer;
                     transition: 0.2s;
@@ -520,44 +525,48 @@ export default function POSClient({ products, userId }: { products: any[], userI
                     background: var(--primary);
                     color: white;
                     border-color: var(--primary);
-                    box-shadow: 0 4px 12px var(--primary-low);
+                    box-shadow: 0 4px 8px var(--primary-low);
                 }
-
+ 
                 .summary-row.total {
-                    margin-top: 1rem;
-                    padding-top: 1rem;
+                    margin-top: 0.5rem;
+                    padding-top: 0.5rem;
                     border-top: 1px solid #e2e8f0;
                     color: #0f172a;
-                    font-size: 1.1rem;
+                    font-size: 0.95rem;
                     font-weight: 950;
                 }
-                .total-val { color: var(--primary); font-size: 1.4rem; }
-
+                .total-val { color: var(--primary); font-size: 1.2rem; }
+ 
                 .checkout-btn {
-                    margin-top: 0.5rem;
+                    margin-top: 0.25rem;
                     background: var(--primary);
                     color: white;
                     border: none;
-                    padding: 1.25rem;
-                    border-radius: 12px;
+                    padding: 0.85rem;
+                    border-radius: 10px;
                     font-weight: 900;
-                    font-size: 1.1rem;
+                    font-size: 0.95rem;
                     cursor: pointer;
                     letter-spacing: 0.05em;
                     transition: 0.2s;
-                    box-shadow: 0 10px 20px var(--primary-low);
+                    box-shadow: 0 6px 12px var(--primary-low);
                 }
                 .checkout-btn:hover:not(:disabled) {
                     transform: translateY(-2px);
-                    box-shadow: 0 15px 30px var(--primary-low);
+                    box-shadow: 0 10px 20px var(--primary-low);
                 }
                 .checkout-btn:disabled {
                     opacity: 0.5;
                     cursor: not-allowed;
                     box-shadow: none;
                 }
-
+ 
                 @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+ 
+                @media (max-width: 1200px) {
+                    .pos-container { grid-template-columns: 1fr 300px; }
+                }
 
                 @media (max-width: 1024px) {
                     .pos-container { grid-template-columns: 1fr; height: auto; }

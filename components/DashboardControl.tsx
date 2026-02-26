@@ -3,207 +3,231 @@
 import React from 'react';
 import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-    PieChart, Pie, Cell, Legend, BarChart, Bar
+    PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
-import { ShoppingBag, TrendingUp, RefreshCcw, AlertTriangle, CreditCard, Wallet, Users, Clock } from 'lucide-react';
+import { ShoppingBag, TrendingUp, RefreshCcw, AlertTriangle, CreditCard, Users, Clock, Wallet } from 'lucide-react';
 
-const COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 export default function DashboardControl({ data }: { data: any }) {
     const {
-        revenueToday, profitToday, ordersToday, returnsToday, hourlyHistory,
-        paymentStats, topProducts, comparisons, lowStockCount, recentActivities
+        revenueToday, revenueYesterday, profitToday, profitYesterday,
+        ordersToday, ordersYesterday, returnsToday, returnsYesterday,
+        hourlyHistory, paymentStats, topProducts, comparisons,
+        lowStockCount, recentActivities
     } = data;
 
-    // Formatting utilities
     const formatCurrency = (val: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
 
+    const calcGrowth = (current: number, previous: number) => {
+        if (!previous) return current > 0 ? 100 : 0;
+        return ((current - previous) / previous) * 100;
+    };
+
+    const GrowthTag = ({ val }: { val: number }) => (
+        <span className={`diff ${val >= 0 ? 'up' : 'down'}`}>
+            {val >= 0 ? '↑' : '↓'}{Math.abs(val).toFixed(1)}%
+        </span>
+    );
+
     return (
-        <div className="dashboard-wrapper">
-            {/* 1. Top Stats Cards */}
-            <div className="stats-grid">
-                <div className="stat-card glass-card purple">
-                    <div className="card-icon"><TrendingUp size={20} /></div>
-                    <div className="info">
-                        <label>Doanh thu thuần (Ngày)</label>
+        <div className="dashboard-content">
+            {/* Metric Grid */}
+            <div className="metrics-grid">
+                <div className="metric-card glass-card">
+                    <div className="icon-box" style={{ color: '#6366f1' }}><TrendingUp size={24} /></div>
+                    <div className="content">
                         <h3>{formatCurrency(revenueToday)}</h3>
-                        <div className="delta positive">Chỉ tính đơn hoàn tất</div>
+                        <label>Doanh thu hôm nay</label>
+                        <div className="metric-footer">
+                            <GrowthTag val={calcGrowth(revenueToday, revenueYesterday)} />
+                            <span className="footer-label">so với hôm qua</span>
+                        </div>
                     </div>
                 </div>
 
-                <div className="stat-card glass-card blue">
-                    <div className="card-icon"><Wallet size={20} /></div>
-                    <div className="info">
-                        <label>Lợi nhuận gộp</label>
+                <div className="metric-card glass-card">
+                    <div className="icon-box" style={{ color: '#10b981' }}><Wallet size={24} /></div>
+                    <div className="content">
                         <h3>{formatCurrency(profitToday)}</h3>
-                        <div className="delta positive">Doanh thu - Giá vốn</div>
+                        <label>LỢI NHUẬN</label>
+                        <div className="metric-footer">
+                            <span className="footer-label">Biên: {((profitToday / (revenueToday || 1)) * 100).toFixed(1)}%</span>
+                            <GrowthTag val={calcGrowth(profitToday, profitYesterday)} />
+                        </div>
                     </div>
                 </div>
 
-                <div className="stat-card glass-card green">
-                    <div className="card-icon"><ShoppingBag size={20} /></div>
-                    <div className="info">
-                        <label>Tổng đơn phát sinh</label>
+                <div className="metric-card glass-card">
+                    <div className="icon-box" style={{ color: '#f59e0b' }}><ShoppingBag size={24} /></div>
+                    <div className="content">
                         <h3>{ordersToday}</h3>
-                        <p>Tỉ lệ trả hàng: {((returnsToday / (ordersToday || 1)) * 100).toFixed(1)}%</p>
+                        <label>ĐƠN HÀNG MỚI</label>
+                        <div className="metric-footer">
+                            <GrowthTag val={calcGrowth(ordersToday, ordersYesterday)} />
+                            <span className="footer-label">so với hôm qua</span>
+                        </div>
                     </div>
                 </div>
 
-                <div className="stat-card glass-card red">
-                    <div className="card-icon"><RefreshCcw size={20} /></div>
-                    <div className="info">
-                        <label>Đơn trả hàng (Xử lý hôm nay)</label>
+                <div className="metric-card glass-card">
+                    <div className="icon-box" style={{ color: '#8b5cf6' }}><RefreshCcw size={24} /></div>
+                    <div className="content">
                         <h3>{returnsToday}</h3>
-                        <p>Đã hoàn trả tồn kho</p>
-                    </div>
-                </div>
-
-                <div className="stat-card glass-card orange">
-                    <div className="card-icon"><AlertTriangle size={20} /></div>
-                    <div className="info">
-                        <label>Hàng sắp hết</label>
-                        <h3>{lowStockCount}</h3>
-                        <p>Cần nhập thêm sớm</p>
+                        <label>ĐƠN HOÀN TRẢ</label>
+                        <div className="metric-footer">
+                            <GrowthTag val={calcGrowth(returnsToday, returnsYesterday)} />
+                            <span className="footer-label">so với hôm qua</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* 2. Main Charts Row */}
-            <div className="charts-row">
-                {/* Hourly Area Chart */}
-                <div className="chart-container glass-card main-chart">
-                    <div className="chart-header">
-                        <h4><Clock size={16} /> Biểu đồ doanh thu theo giờ</h4>
-                        <div className="legend-items">
-                            <span className="dot revenue"></span> Doanh thu
+            {/* Comparison Row */}
+            <div className="main-stats-row full-width">
+                {/* Hourly Revenue Comparison */}
+                <div className="glass-card chart-card">
+                    <div className="section-header">
+                        <div className="title">
+                            <TrendingUp size={20} />
+                            <span>So sánh Doanh thu theo giờ</span>
+                        </div>
+                        <div className="chart-legend revenue-chart-legend">
+                            <div className="legend-item-line"><span className="line-indicator" style={{ background: 'var(--primary)', height: '4px', width: '24px' }}></span> Hôm nay</div>
+                            <div className="legend-item-line"><span className="line-indicator" style={{ borderBottom: '2px dashed #334155', width: '24px', height: '0px' }}></span> Hôm qua</div>
+                            <div className="legend-item-line"><span className="line-indicator" style={{ background: '#cbd5e1', height: '2px', width: '24px' }}></span> Tuần trước</div>
                         </div>
                     </div>
-                    <div style={{ width: '100%', height: 350 }}>
-                        <ResponsiveContainer>
-                            <AreaChart data={hourlyHistory}>
+                    <div className="chart-body">
+                        <ResponsiveContainer width="100%" height={340}>
+                            <AreaChart data={hourlyHistory} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                                 <defs>
-                                    <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
+                                    <linearGradient id="colorToday" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.15} />
+                                        <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} tickFormatter={(val) => `${val / 1000}k`} />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
+                                <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--text-muted)' }} interval={1} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--text-muted)' }} tickFormatter={(val) => `${val / 1000}k`} />
                                 <Tooltip
-                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-                                    formatter={(val: any) => [formatCurrency(Number(val)), "Doanh thu"]}
+                                    contentStyle={{ borderRadius: '15px', border: 'none', boxShadow: 'var(--shadow-lg)' }}
+                                    formatter={(val: any, name: any) => [
+                                        formatCurrency(Number(val)),
+                                        name === 'todayRevenue' ? 'Hôm nay' : name === 'yesterdayRevenue' ? 'Hôm qua' : 'Tuần trước'
+                                    ]}
                                 />
-                                <Area type="monotone" dataKey="revenue" stroke="#4f46e5" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
+                                <Area type="monotone" dataKey="lastWeekRevenue" stroke="#cbd5e1" strokeWidth={1} fill="none" dot={false} />
+                                <Area type="monotone" dataKey="yesterdayRevenue" stroke="#334155" strokeWidth={2} strokeDasharray="5 5" fill="none" dot={false} />
+                                <Area type="monotone" dataKey="todayRevenue" stroke="var(--primary)" strokeWidth={3} fill="url(#colorToday)" dot={{ r: 4, fill: 'var(--primary)', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
-                {/* Payment Breakdown Pie */}
-                <div className="chart-container glass-card side-chart">
-                    <div className="chart-header">
-                        <h4><CreditCard size={16} /> Phương thức thanh toán</h4>
+                {/* Hourly Orders Comparison */}
+                <div className="glass-card chart-card">
+                    <div className="section-header">
+                        <div className="title">
+                            <ShoppingBag size={20} />
+                            <span>So sánh Lượng đơn theo giờ</span>
+                        </div>
+                        <div className="chart-legend orders-chart-legend">
+                            <div className="legend-item-line"><span className="line-indicator" style={{ background: '#818cf8', width: '12px', height: '12px', borderRadius: '3px' }}></span> Hôm nay</div>
+                            <div className="legend-item-line"><span className="line-indicator" style={{ background: '#c7d2fe', width: '12px', height: '12px', borderRadius: '3px' }}></span> Hôm qua</div>
+                            <div className="legend-item-line"><span className="line-indicator" style={{ background: '#f1f5f9', width: '12px', height: '12px', borderRadius: '3px', border: '1px solid #e2e8f0' }}></span> Tuần trước</div>
+                        </div>
                     </div>
-                    <div style={{ width: '100%', height: 280 }}>
-                        <ResponsiveContainer>
-                            <PieChart>
-                                <Pie
-                                    data={paymentStats}
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                    paddingAngle={5}
-                                    dataKey="value"
-                                >
-                                    {paymentStats.map((entry: any, index: number) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                                <Legend verticalAlign="bottom" height={36} />
-                            </PieChart>
+                    <div className="chart-body">
+                        <ResponsiveContainer width="100%" height={340}>
+                            <BarChart data={hourlyHistory} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
+                                <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--text-muted)' }} interval={1} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--text-muted)' }} />
+                                <Tooltip
+                                    contentStyle={{ borderRadius: '15px', border: 'none', boxShadow: 'var(--shadow-lg)' }}
+                                    cursor={{ fill: 'rgba(0,0,0,0.02)' }}
+                                    formatter={(val: any, name: any) => [
+                                        val,
+                                        name === 'todayOrders' ? 'Hôm nay' : name === 'yesterdayOrders' ? 'Hôm qua' : 'Tuần trước'
+                                    ]}
+                                />
+                                <Bar dataKey="lastWeekOrders" fill="#f1f5f9" radius={[4, 4, 0, 0]} barSize={8} />
+                                <Bar dataKey="yesterdayOrders" fill="#c7d2fe" radius={[4, 4, 0, 0]} barSize={8} />
+                                <Bar dataKey="todayOrders" fill="#818cf8" radius={[4, 4, 0, 0]} barSize={8} />
+                            </BarChart>
                         </ResponsiveContainer>
                     </div>
-                    <div className="payment-list">
-                        {paymentStats.map((p: any, i: number) => (
-                            <div className="p-item" key={p.name}>
-                                <div className="p-label">
-                                    <span className="dot" style={{ background: COLORS[i] }}></span>
-                                    {p.name}
-                                </div>
-                                <div className="p-value">{formatCurrency(p.value)} ({p.count} đơn)</div>
-                            </div>
-                        ))}
-                    </div>
                 </div>
             </div>
 
-            {/* 3. Bottom Row: Top Products & Activity */}
-            <div className="bottom-grid">
-                {/* Top Products */}
-                <div className="glass-card flex-col">
-                    <div className="chart-header">
-                        <h4>Top sản phẩm bán chạy (Ngày)</h4>
+            {/* Middle Section: Payments & Performance (50:50) */}
+            <div className="main-stats-row">
+                {/* Payments Chart with Center Label */}
+                <div className="glass-card" style={{ position: 'relative' }}>
+                    <div className="section-header">
+                        <div className="title"><CreditCard size={20} /> <span>Phương thức thanh toán</span></div>
                     </div>
-                    <div className="top-products-list">
-                        {topProducts.length > 0 ? topProducts.map((p: any, i: number) => (
-                            <div className="product-item" key={i}>
-                                <div className="p-info">
-                                    <span className="p-rank">#{i + 1}</span>
-                                    <div className="p-details">
-                                        <p className="p-name">{p.name}</p>
-                                        <p className="p-meta">Bán được {p.quantity} cái - {formatCurrency(p.revenue)}</p>
-                                    </div>
-                                </div>
-                                <div className="p-bar-bg">
-                                    <div className="p-bar-fill" style={{ width: `${(p.quantity / topProducts[0].quantity) * 100}%`, background: COLORS[i % COLORS.length] }}></div>
-                                </div>
+                    <div className="chart-body mini">
+                        <div style={{ position: 'relative', height: '220px' }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie data={paymentStats} innerRadius={65} outerRadius={85} paddingAngle={10} dataKey="value" stroke="none">
+                                        {paymentStats.map((_: any, index: number) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip formatter={(val: any) => formatCurrency(val)} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                            <div className="donut-center">
+                                <span className="label">TỔNG</span>
+                                <span className="val">{formatCurrency(revenueToday)}</span>
                             </div>
-                        )) : <p className="empty">Chưa có dữ liệu hôm nay</p>}
+                        </div>
+                        <div className="payment-legend" style={{ border: 'none', background: 'var(--surface-secondary)', borderRadius: '12px', padding: '1rem' }}>
+                            {(() => {
+                                const totalValue = paymentStats.reduce((sum: number, p: any) => sum + p.value, 0) || 1;
+                                return paymentStats.map((p: any, i: number) => {
+                                    const percentage = (p.value / totalValue) * 100;
+                                    return (
+                                        <div className="legend-item" key={p.name} style={{ marginBottom: i === 0 && paymentStats.length > 1 ? '0.5rem' : 0 }}>
+                                            <span className="dot" style={{ background: COLORS[i] }}></span>
+                                            <span className="name" style={{ fontWeight: 700 }}>{p.name}</span>
+                                            <span className="val" style={{ color: 'var(--text-main)', fontWeight: 850 }}>
+                                                {formatCurrency(p.value)} ({percentage.toFixed(0)}%)
+                                            </span>
+                                        </div>
+                                    );
+                                });
+                            })()}
+                        </div>
                     </div>
                 </div>
 
-                {/* Activity Log */}
-                <div className="glass-card flex-col">
-                    <div className="chart-header">
-                        <h4><Users size={16} /> Hoạt động gần đây</h4>
+                {/* Weekly Performance */}
+                <div className="glass-card">
+                    <div className="section-header">
+                        <div className="title"><TrendingUp size={20} /> <span>Hiệu suất Tuần</span></div>
                     </div>
-                    <div className="activity-list">
-                        {recentActivities.map((log: any) => (
-                            <div className="activity-item" key={log.id}>
-                                <div className="act-user-circle">{log.user.username.charAt(0).toUpperCase()}</div>
-                                <div className="act-content">
-                                    <p><strong>{log.user.username}</strong> {log.action}</p>
-                                    <span className="act-time">{new Date(log.createdAt).toLocaleTimeString('vi-VN')} - {log.module}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Performance Comparison */}
-                <div className="glass-card flex-col">
-                    <div className="chart-header">
-                        <h4>Hiệu suất so sánh</h4>
-                    </div>
-                    <div className="comp-body">
+                    <div className="comp-body" style={{ gap: '2rem', marginTop: '1rem' }}>
                         <div className="comp-item">
-                            <label>Doanh thu Tuần này</label>
-                            <div className="comp-row">
-                                <span className="val">{formatCurrency(comparisons.weekly.current)}</span>
+                            <label style={{ fontSize: '0.8rem', letterSpacing: '0.05em' }}>DOANH THU TUẦN NÀY</label>
+                            <div className="comp-row" style={{ marginTop: '0.5rem' }}>
+                                <span className="val" style={{ fontSize: '1.75rem' }}>{formatCurrency(comparisons.weekly.current)}</span>
                                 <span className={`diff ${comparisons.weekly.current >= comparisons.weekly.previous ? 'up' : 'down'}`}>
-                                    {Math.abs(((comparisons.weekly.current - comparisons.weekly.previous) / (comparisons.weekly.previous || 1) * 100)).toFixed(1)}%
-                                    {comparisons.weekly.current >= comparisons.weekly.previous ? ' ↑' : ' ↓'}
+                                    {comparisons.weekly.current >= comparisons.weekly.previous ? '↑' : '↓'}
+                                    {Math.abs(((comparisons.weekly.current - comparisons.weekly.previous) / (comparisons.weekly.previous || 1)) * 100).toFixed(1)}%
                                 </span>
                             </div>
                         </div>
                         <div className="comp-item">
-                            <label>Doanh thu Tháng này</label>
-                            <div className="comp-row">
-                                <span className="val">{formatCurrency(comparisons.monthly.current)}</span>
-                                <span className={`diff ${comparisons.monthly.current >= comparisons.monthly.previous ? 'up' : 'down'}`}>
-                                    {Math.abs(((comparisons.monthly.current - comparisons.monthly.previous) / (comparisons.monthly.previous || 1) * 100)).toFixed(1)}%
-                                    {comparisons.monthly.current >= comparisons.monthly.previous ? ' ↑' : ' ↓'}
+                            <label style={{ fontSize: '0.8rem', letterSpacing: '0.05em' }}>LƯỢNG ĐƠN TUẦN NÀY</label>
+                            <div className="comp-row" style={{ marginTop: '0.5rem' }}>
+                                <span className="val" style={{ fontSize: '1.75rem' }}>{comparisons.orders.current} đơn</span>
+                                <span className={`diff ${comparisons.orders.current >= comparisons.orders.previous ? 'up' : 'down'}`}>
+                                    {comparisons.orders.current >= comparisons.orders.previous ? '↑' : '↓'}
+                                    {Math.abs(((comparisons.orders.current - comparisons.orders.previous) / (comparisons.orders.previous || 1)) * 100).toFixed(1)}%
                                 </span>
                             </div>
                         </div>
@@ -211,71 +235,54 @@ export default function DashboardControl({ data }: { data: any }) {
                 </div>
             </div>
 
-            <style jsx>{`
-                .dashboard-wrapper { display: flex; flex-direction: column; gap: 1.5rem; }
-                
-                .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
-                .stat-card { padding: 1.5rem; display: flex; align-items: flex-start; gap: 1rem; border: 1px solid rgba(255,255,255,0.2); }
-                .card-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.05); }
-                .stat-card.purple .card-icon { background: #e0e7ff; color: #4f46e5; }
-                .stat-card.green .card-icon { background: #dcfce7; color: #10b981; }
-                .stat-card.red .card-icon { background: #fee2e2; color: #ef4444; }
-                .stat-card.orange .card-icon { background: #fef3c7; color: #f59e0b; }
-                .stat-card.blue .card-icon { background: #e0f2fe; color: #0ea5e9; }
-                
-                .stat-card label { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
-                .stat-card h3 { margin: 0.25rem 0; font-size: 1.5rem; font-weight: 950; color: #0f172a; }
-                .stat-card p { margin: 0; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
-                .delta.positive { color: #10b981; font-weight: 800; font-size: 0.75rem; }
+            {/* Bottom Section: Top Products & Activities (50:50) */}
+            <div className="bottom-grid">
+                {/* Top Products with Horizontal Bars */}
+                <div className="glass-card">
+                    <div className="section-header">
+                        <div className="title"><ShoppingBag size={20} /> <span>Sản phẩm bán chạy</span></div>
+                    </div>
+                    <div className="product-bar-list">
+                        {[...topProducts]
+                            .sort((a: any, b: any) => b.quantity - a.quantity)
+                            .slice(0, 5)
+                            .map((p: any, i: number) => {
+                                const maxQty = Math.max(...topProducts.map((x: any) => x.quantity), 1);
+                                const percentage = (p.quantity / maxQty) * 100;
+                                return (
+                                    <div className="product-bar-item" key={i}>
+                                        <div className={`rank-badge top-${i + 1}`}>{i + 1}</div>
+                                        <span className="p-name">{p.name}</span>
+                                        <span className="p-qty">{p.quantity}</span>
+                                        <div className="p-bar-bg">
+                                            <div className="p-bar-fill" style={{ width: `${percentage}%`, background: '#10b981' }}></div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                    </div>
+                </div>
 
-                .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
-                .chart-container { padding: 1.5rem; }
-                .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-                .chart-header h4 { margin: 0; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
-                
-                .legend-items { display: flex; align-items: center; gap: 1rem; font-size: 0.75rem; color: #64748b; font-weight: 600; }
-                .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-                .dot.revenue { background: #4f46e5; }
-
-                .payment-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; border-top: 1px solid #f1f5f9; padding-top: 1rem; }
-                .p-item { display: flex; justify-content: space-between; font-size: 0.8rem; }
-                .p-label { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; }
-                .p-value { font-weight: 800; color: #1e293b; }
-
-                .bottom-grid { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 1.5rem; }
-                .flex-col { display: flex; flex-direction: column; padding: 1.5rem; }
-                
-                .top-products-list { display: flex; flex-direction: column; gap: 1rem; }
-                .product-item { }
-                .p-info { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.5rem; }
-                .p-rank { font-size: 0.8rem; font-weight: 950; color: #94a3b8; }
-                .p-name { margin: 0; font-size: 0.85rem; font-weight: 800; color: #1e293b; }
-                .p-meta { margin: 0; font-size: 0.7rem; color: #94a3b8; }
-                .p-bar-bg { height: 6px; background: #f1f5f9; border-radius: 3px; overflow: hidden; }
-                .p-bar-fill { height: 100%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
-
-                .activity-list { display: flex; flex-direction: column; gap: 1rem; max-height: 400px; overflow-y: auto; }
-                .activity-item { display: flex; gap: 0.75rem; align-items: flex-start; }
-                .act-user-circle { min-width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: #4f46e5; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-                .act-content p { margin: 0; font-size: 0.8rem; line-height: 1.4; }
-                .act-time { font-size: 0.65rem; color: #94a3b8; font-weight: 600; }
-
-                .comp-body { display: flex; flex-direction: column; gap: 1.5rem; }
-                .comp-item label { font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
-                .comp-row { display: flex; justify-content: space-between; align-items: center; margin-top: 0.25rem; }
-                .comp-row .val { font-size: 1.1rem; font-weight: 950; color: #0f172a; }
-                .diff { font-size: 0.75rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 6px; }
-                .diff.up { background: #dcfce7; color: #10b981; }
-                .diff.down { background: #fee2e2; color: #ef4444; }
-
-                @media (max-width: 1200px) {
-                    .charts-row { grid-template-columns: 1fr; }
-                    .bottom-grid { grid-template-columns: 1fr 1fr; }
-                }
-                @media (max-width: 768px) {
-                    .bottom-grid { grid-template-columns: 1fr; }
-                }
-            `}</style>
+                {/* System Activities */}
+                <div className="glass-card">
+                    <div className="section-header">
+                        <div className="title"><Users size={18} /> <span>Hoạt động gần đây</span></div>
+                    </div>
+                    <div className="activity-list" style={{ maxHeight: '420px' }}>
+                        {recentActivities.slice(0, 6).map((log: any) => (
+                            <div className="activity-item" key={log.id} style={{ marginBottom: '1rem' }}>
+                                <div className="act-user-circle" style={{ width: '32px', height: '32px', minWidth: '32px' }}>
+                                    {log.user.username.charAt(0).toUpperCase()}
+                                </div>
+                                <div className="act-content">
+                                    <p style={{ fontSize: '0.8125rem' }}><strong>{log.user.username}</strong> {log.action}</p>
+                                    <span className="act-time" style={{ fontSize: '0.7rem' }}>{new Date(log.createdAt).toLocaleString('vi-VN')}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

@@ -7,10 +7,30 @@ export async function processSale(formData: any) {
     const { customerId, items, paymentMethod, discountTotal, subTotal, grandTotal, userId } = formData;
 
     const sale = await db.$transaction(async (tx) => {
+        // 0. Generate Custom Order Code (INV-TN-ddMMyy-xxxx)
+        const now = new Date();
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+        const countToday = await tx.sale.count({
+            where: {
+                soldAt: {
+                    gte: startOfDay,
+                    lte: endOfDay
+                }
+            }
+        });
+
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yy = String(now.getFullYear()).slice(-2);
+        const sequence = String(countToday + 1).padStart(4, '0');
+        const customOrderCode = `INV-TN-${dd}${mm}${yy}-${sequence}`;
+
         // 1. Create Sale
         const newSale = await tx.sale.create({
             data: {
-                orderCode: `S-${Date.now()}`,
+                orderCode: customOrderCode,
                 userId,
                 customerId: customerId || null,
                 paymentMethod,

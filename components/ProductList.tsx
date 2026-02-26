@@ -96,7 +96,7 @@ export default function ProductList({ products }: { products: any[] }) {
     return (
         <div className="animate-fade-in" style={{ position: 'relative' }}>
             {/* Search & Actions Bar */}
-            <div className="glass-card" style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div className="glass-card" style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', padding: '1rem 1.5rem' }}>
                 <div style={{ flex: 1, position: 'relative', minWidth: '300px' }}>
                     <span style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
                     <input
@@ -109,11 +109,11 @@ export default function ProductList({ products }: { products: any[] }) {
                 </div>
 
                 <div style={{ display: 'flex', gap: '0.75rem' }}>
-                    <button className="btn" style={{ background: '#f1f5f9' }} onClick={handleExport}>
-                        📤 Xuất CSV
+                    <button className="btn" style={{ background: 'rgba(99, 102, 241, 0.05)', color: 'var(--text-main)' }} onClick={handleExport}>
+                        <span style={{ color: 'var(--primary)' }}>📤</span> Xuất CSV
                     </button>
-                    <button className="btn" style={{ background: '#f1f5f9' }} onClick={() => fileInputRef.current?.click()} disabled={importing}>
-                        📥 {importing ? "Đang xử lý..." : "Nhập CSV"}
+                    <button className="btn" style={{ background: 'rgba(99, 102, 241, 0.05)', color: 'var(--text-main)' }} onClick={() => fileInputRef.current?.click()} disabled={importing}>
+                        <span style={{ color: 'var(--primary)' }}>📥</span> {importing ? "Đang xử lý..." : "Nhập CSV"}
                     </button>
                     <input type="file" ref={fileInputRef} hidden accept=".csv" onChange={handleImport} />
 
@@ -125,15 +125,15 @@ export default function ProductList({ products }: { products: any[] }) {
 
             <div className="glass-card" style={{ padding: 0, overflow: 'hidden' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead style={{ background: 'var(--background)', borderBottom: '1px solid var(--surface-border)' }}>
+                    <thead>
                         <tr>
-                            <th style={{ textAlign: 'left', padding: '1rem', width: '80px' }}>Ảnh</th>
-                            <th style={{ textAlign: 'left', padding: '1rem' }}>Sản phẩm</th>
-                            <th style={{ textAlign: 'left', padding: '1rem' }}>Mã SKU</th>
-                            <th style={{ textAlign: 'left', padding: '1rem' }}>Tồn kho</th>
-                            <th style={{ textAlign: 'left', padding: '1rem' }}>Nhóm</th>
-                            <th style={{ textAlign: 'center', padding: '1rem' }}>Trạng thái</th>
-                            <th style={{ textAlign: 'right', padding: '1rem' }}>Thao tác</th>
+                            <th style={{ textAlign: 'left', width: '80px' }}>Ảnh</th>
+                            <th style={{ textAlign: 'left' }}>Sản phẩm</th>
+                            <th style={{ textAlign: 'left' }}>Mã SKU</th>
+                            <th style={{ textAlign: 'left' }}>Tồn kho</th>
+                            <th style={{ textAlign: 'left' }}>Nhóm</th>
+                            <th style={{ textAlign: 'center' }}>Trạng thái</th>
+                            <th style={{ textAlign: 'right' }}>Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,9 +156,9 @@ export default function ProductList({ products }: { products: any[] }) {
                                     <td style={{ padding: '1rem' }}>
                                         <button
                                             onClick={() => setSelectedProduct(product)}
-                                            style={{ background: 'none', border: 'none', padding: 0, textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit' }}
+                                            style={{ display: 'block', textAlign: 'left' }}
                                         >
-                                            <div style={{ fontWeight: 700, color: 'var(--text)' }}>{product.name}</div>
+                                            <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '0.9375rem' }}>{product.name}</div>
                                             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{product.brand || "Không có thương hiệu"}</div>
                                         </button>
                                     </td>

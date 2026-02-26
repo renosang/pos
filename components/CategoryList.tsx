@@ -41,10 +41,10 @@ export default function CategoryList({ categories }: { categories: any[] }) {
                         </div>
 
                         <div className="cat-actions" style={{ marginTop: '1.5rem', display: 'flex', gap: '0.5rem' }}>
-                            <Link href={`/products?category=${cat.id}`} className="btn-light" style={{ flex: 1 }}>
+                            <Link href={`/products?category=${cat.id}`} className="btn" style={{ flex: 1, background: 'var(--surface-secondary)', fontSize: '0.75rem' }}>
                                 Xem sản phẩm
                             </Link>
-                            <button className="btn-light" onClick={() => setSelectedCategory(cat)}>
+                            <button className="btn" style={{ background: 'var(--surface-secondary)', fontSize: '0.75rem' }} onClick={() => setSelectedCategory(cat)}>
                                 Biến động
                             </button>
                         </div>
