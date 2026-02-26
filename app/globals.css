@@ -832,24 +832,40 @@ button {
     width: 100%;
   }
 
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .header-top-row {
+    display: contents;
+    /* Allows children (title, badge) to be reordered with welcome-text */
+  }
+
   .page-title {
     font-size: 1.5rem !important;
     white-space: nowrap;
     width: 100%;
     display: flex;
     flex-wrap: nowrap !important;
+    order: 1;
   }
 
   .welcome-text,
   .page-header p {
     font-size: 0.75rem !important;
-    margin-top: -0.25rem;
+    margin-top: 0 !important;
+    order: 2;
   }
 
   .date-badge {
     padding: 0.5rem 0.75rem !important;
     font-size: 0.75rem !important;
     font-weight: 800 !important;
+    order: 3;
+    width: fit-content !important;
+    margin-top: 0.25rem;
   }
 
   /* Global Typography Reductions for Mobile */
