@@ -20,8 +20,32 @@ export default function BarcodeScanner({
 }: BarcodeScannerProps) {
     const [isMounted, setIsMounted] = useState(false);
     const [cameraError, setCameraError] = useState<string | null>(null);
+    const [successFlash, setSuccessFlash] = useState(false);
     const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
     const isTransitioningRef = useRef(false);
+
+    // Audio context for beep
+    const playBeep = () => {
+        try {
+            const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            oscillator.type = "sine";
+            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.01);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
+
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.1);
+        } catch (e) {
+            console.warn("Audio beep failed", e);
+        }
+    };
 
     useEffect(() => {
         setIsMounted(true);
@@ -74,6 +98,9 @@ export default function BarcodeScanner({
                         { facingMode: "environment" },
                         config,
                         (decodedText) => {
+                            playBeep();
+                            setSuccessFlash(true);
+                            setTimeout(() => setSuccessFlash(false), 200);
                             onScanSuccess(decodedText);
                         },
                         (errorMessage) => {
@@ -116,6 +143,7 @@ export default function BarcodeScanner({
     return (
         <div className="scanner-container">
             <div id="reader" className="scanner-view"></div>
+            {successFlash && <div className="success-flash"></div>}
             {cameraError && (
                 <div className="camera-error">
                     <span className="error-icon">⚠️</span>
@@ -139,6 +167,17 @@ export default function BarcodeScanner({
                 .scanner-view {
                     width: 100%;
                     min-height: 300px;
+                    background: #000;
+                }
+                .success-flash {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(255, 255, 255, 0.4);
+                    z-index: 5;
+                    pointer-events: none;
                 }
                 .camera-error {
                     position: absolute;
@@ -170,14 +209,16 @@ export default function BarcodeScanner({
                     font-weight: 600;
                     cursor: pointer;
                 }
-                /* Hide default html5-qrcode UI elements if any leak through */
+                /* Important for mobile video */
+                #reader video {
+                    width: 100% !important;
+                    height: 100% !important;
+                    object-fit: cover !important;
+                    display: block !important;
+                }
                 #reader__dashboard_section_csr, 
                 #reader__status_span {
                     display: none !important;
-                }
-                video {
-                    object-fit: cover !important;
-                    border-radius: 16px;
                 }
             `}</style>
         </div>

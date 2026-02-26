@@ -14,13 +14,12 @@ export default function POSClient({ products, userId }: { products: any[], userI
     const handleScanSuccess = (barcode: string) => {
         if (barcode === lastScanned) return; // Prevent double scan
         setLastScanned(barcode);
-        setTimeout(() => setLastScanned(null), 2000);
+        setTimeout(() => setLastScanned(null), 1500); // 1.5s cooldown for same item
 
         const found = products.flatMap((p: any) => p.variants.map((v: any) => ({ ...v, productName: p.name, categoryName: p.category.name }))).find(v => v.barcode === barcode);
         if (found) {
             addToCart(found);
-            setShowScanner(false);
-            // subtle feedback instead of alert would be better, but keeping consistency for now or using a console log
+            // Scanner stays open for continuous scanning
             console.log(`Đã thêm: ${found.productName}`);
         } else {
             console.warn(`Không tìm thấy mã: ${barcode}`);
