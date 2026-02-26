@@ -221,7 +221,7 @@ export default function DashboardControl({ data }: { data: any }) {
                     </div>
                     <div className="comp-body" style={{ gap: '2rem', marginTop: '1rem' }}>
                         <div className="comp-item">
-                            <label style={{ fontSize: '0.8rem', letterSpacing: '0.05em' }}>DOANH THU TUẦN NÀY</label>
+                            <label>DOANH THU TUẦN NÀY</label>
                             <div className="comp-row" style={{ marginTop: '0.5rem' }}>
                                 <span className="val" style={{ fontSize: '1.75rem' }}>{formatCurrency(comparisons.weekly.current)}</span>
                                 <span className={`diff ${comparisons.weekly.current >= comparisons.weekly.previous ? 'up' : 'down'}`}>
@@ -231,7 +231,7 @@ export default function DashboardControl({ data }: { data: any }) {
                             </div>
                         </div>
                         <div className="comp-item">
-                            <label style={{ fontSize: '0.8rem', letterSpacing: '0.05em' }}>LƯỢNG ĐƠN TUẦN NÀY</label>
+                            <label>LƯỢNG ĐƠN TUẦN NÀY</label>
                             <div className="comp-row" style={{ marginTop: '0.5rem' }}>
                                 <span className="val" style={{ fontSize: '1.75rem' }}>{comparisons.orders.current} đơn</span>
                                 <span className={`diff ${comparisons.orders.current >= comparisons.orders.previous ? 'up' : 'down'}`}>
