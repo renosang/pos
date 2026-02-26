@@ -98,16 +98,15 @@ export default function BottomNav({ session }: { session: any }) {
 
             <nav className="bottom-nav show-mobile">
                 <div className="m-nav-wrapper">
-                    {/* SVG background with dynamic wave cutout */}
+                    {/* SVG background with dynamic convex wave (bulge) */}
                     <div className="m-nav-bg">
                         <svg viewBox="0 0 100 30" preserveAspectRatio="none">
                             <path
-                                d={activeIndex === -1 ? "M 0,30 L 0,0 L 100,0 L 100,30 Z" :
+                                d={activeIndex === -1 ? "M 0,30 L 0,10 L 100,10 L 100,30 Z" :
                                     `M 0,30 L 0,10 
-                                    H ${activeIndex * 20 + 2}
-                                    Q ${activeIndex * 20 + 5},10 ${activeIndex * 20 + 7},5
-                                    C ${activeIndex * 20 + 8.5},2 ${activeIndex * 20 + 11.5},2 ${activeIndex * 20 + 13},5
-                                    Q ${activeIndex * 20 + 15},10 ${activeIndex * 20 + 18},10
+                                    H ${activeIndex * 20 + 1.5}
+                                    C ${activeIndex * 20 + 5},10 ${activeIndex * 20 + 6},-2 ${activeIndex * 20 + 10},-2
+                                    C ${activeIndex * 20 + 14},-2 ${activeIndex * 20 + 15},10 ${activeIndex * 20 + 18.5},10
                                     H 100
                                     L 100,30 Z`}
                                 fill="white"
@@ -183,7 +182,7 @@ export default function BottomNav({ session }: { session: any }) {
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    filter: drop-shadow(0 -10px 25px rgba(0,0,0,0.08));
+                    filter: drop-shadow(0 -10px 25px rgba(0,0,0,0.1));
                 }
 
                 .m-nav-bg svg {
@@ -192,7 +191,7 @@ export default function BottomNav({ session }: { session: any }) {
                 }
 
                 .m-nav-bg path {
-                    transition: d 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                    transition: d 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
 
                 .m-nav-items {
@@ -204,7 +203,6 @@ export default function BottomNav({ session }: { session: any }) {
                     padding-bottom: env(safe-area-inset-bottom);
                 }
 
-                /* Mobile Nav Slot - Fixed column layout */
                 .m-nav-slot {
                     display: flex !important;
                     flex-direction: column !important;
@@ -217,6 +215,7 @@ export default function BottomNav({ session }: { session: any }) {
                     text-decoration: none !important;
                     color: #94a3b8 !important;
                     width: 100%;
+                    position: relative;
                 }
 
                 .m-icon-container {
@@ -240,13 +239,13 @@ export default function BottomNav({ session }: { session: any }) {
                 }
 
                 .m-nav-slot.active .m-icon-circle {
-                    transform: translateY(-44px);
+                    transform: translateY(-50px);
                     background: var(--primary);
                     color: white;
-                    box-shadow: 0 12px 24px rgba(99, 102, 241, 0.35);
+                    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+                    border: 4px solid white;
                 }
 
-                /* Special color for center scan item when active */
                 .m-nav-slot:nth-child(3).active .m-icon-circle {
                     background: linear-gradient(135deg, var(--primary), var(--accent));
                 }
@@ -264,7 +263,7 @@ export default function BottomNav({ session }: { session: any }) {
                 .m-nav-slot.active .m-label {
                     color: var(--primary) !important;
                     font-weight: 950 !important;
-                    transform: translateY(-10px);
+                    transform: translateY(-12px);
                 }
 
                 /* More Menu Styling */
@@ -275,8 +274,8 @@ export default function BottomNav({ session }: { session: any }) {
                     right: 0;
                     bottom: 0;
                     background: rgba(15, 23, 42, 0.6);
-                    backdrop-filter: blur(10px);
-                    -webkit-backdrop-filter: blur(10px);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
                     z-index: 2000;
                     opacity: 0;
                     visibility: hidden;
@@ -295,7 +294,7 @@ export default function BottomNav({ session }: { session: any }) {
                     background: white;
                     border-top-left-radius: 40px;
                     border-top-right-radius: 40px;
-                    padding: 3rem 2rem;
+                    padding: 3.5rem 2rem;
                     transform: translateY(100%);
                     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
                     box-shadow: 0 -20px 50px rgba(0,0,0,0.15);
