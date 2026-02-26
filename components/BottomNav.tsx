@@ -33,22 +33,25 @@ export default function BottomNav({ session }: { session: any }) {
     if (!session || !isMounted) return null;
 
     const navItems = [
-        { id: "inventory", href: "/inventory", icon: <Box strokeWidth={1.5} size={24} />, label: "Tồn kho" },
-        { id: "home", href: "/", icon: <LayoutDashboard strokeWidth={1.5} size={24} />, label: "Tổng quan" },
+        { id: "sales", href: "/sales", icon: <Receipt strokeWidth={1.5} size={24} />, label: "Hóa đơn" },
         { id: "search", href: "/pos?focusSearch=true", icon: <Search strokeWidth={1.5} size={24} />, label: "Tìm kiếm" },
+        { id: "home", href: "/", icon: <LayoutDashboard strokeWidth={1.5} size={24} />, label: "Tổng quan" },
         { id: "scan", icon: <Scan strokeWidth={1.5} size={24} />, label: "Quét mã" },
         { id: "more", icon: <MoreHorizontal strokeWidth={1.5} size={24} />, label: "Thêm" },
     ];
 
     const getActiveIndex = () => {
         if (isMenuOpen) return 4;
+        const fs = searchParams?.get("focusSearch") === "true";
+
         if (pathname === "/pos" || pathname.includes("/pos")) {
-            if (searchParams?.get("focusSearch") === "true") return 2;
+            if (fs) return 1;
             return 3;
         }
-        if (pathname === "/inventory" || pathname.includes("/inventory")) return 0;
-        if (pathname === "/" || pathname === "/dashboard") return 1;
-        if (pathname.includes("/products")) return 0;
+        if (pathname === "/sales" || pathname.includes("/sales")) return 0;
+        if (pathname === "/" || pathname === "/dashboard") return 2;
+        if (pathname.includes("/inventory")) return 4;
+        if (pathname.includes("/products")) return 4;
         if (pathname.includes("/purchases")) return 4;
         return -1;
     };
@@ -79,6 +82,7 @@ export default function BottomNav({ session }: { session: any }) {
                     </div>
                     <div className="menu-grid">
                         {[
+                            { href: "/inventory", icon: <Box strokeWidth={1.5} size={22} />, label: "Tồn kho" },
                             { href: "/products", icon: <Package strokeWidth={1.5} size={22} />, label: "Sản phẩm" },
                             { href: "/products/categories", icon: <Folder strokeWidth={1.5} size={22} />, label: "Danh mục" },
                             { href: "/inventory/adjustment", icon: <ClipboardCheck strokeWidth={1.5} size={22} />, label: "Kiểm kê" },
@@ -174,6 +178,7 @@ export default function BottomNav({ session }: { session: any }) {
                     position: relative;
                     display: flex;
                     justify-content: center;
+                    height: 100%;
                 }
 
                 .nav-action-area {
@@ -182,12 +187,16 @@ export default function BottomNav({ session }: { session: any }) {
                     align-items: center;
                     justify-content: center;
                     width: 100%;
-                    background: none;
-                    border: none;
-                    padding: 0;
+                    height: 100%;
+                    background: none !important;
+                    border: none !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
                     text-decoration: none;
-                    gap: 6px;
+                    gap: 4px;
                     transition: all 0.3s ease;
+                    outline: none;
+                    -webkit-tap-highlight-color: transparent;
                 }
 
                 .nav-icon-wrapper {
@@ -211,7 +220,7 @@ export default function BottomNav({ session }: { session: any }) {
                 .nav-item-slot.active .nav-icon-circle {
                     background: var(--primary);
                     color: white;
-                    transform: translateY(-24px);
+                    transform: translateY(-20px);
                     box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
                     width: 54px;
                     height: 54px;
@@ -345,6 +354,16 @@ export default function BottomNav({ session }: { session: any }) {
                     .bottom-nav, .more-menu-overlay {
                         display: none !important;
                     }
+                }
+                
+                /* Alignment normalization for different element types */
+                .nav-action-area {
+                    line-height: 1;
+                    box-sizing: border-box;
+                }
+                
+                .nav-icon-wrapper {
+                    flex-shrink: 0;
                 }
             `}</style>
         </>
