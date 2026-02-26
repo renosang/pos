@@ -267,7 +267,7 @@ button {
 }
 
 .metric-card .content h3 {
-  font-size: 2.125rem;
+  font-size: 1.75rem;
   font-weight: 900;
   margin-bottom: 0.125rem;
   color: var(--text-main);
@@ -566,11 +566,7 @@ button {
   .metrics-grid {
     grid-template-columns: 1fr !important;
     gap: 1rem;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    width: 100%;
   }
 
   .glass-card {
@@ -584,12 +580,34 @@ button {
   }
 
   .metric-card {
-    padding: 1rem;
+    padding: 0.875rem;
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
-    gap: 0.5rem;
-    min-height: 140px;
+    gap: 0.25rem;
+    min-height: 110px;
+    justify-content: center;
+  }
+
+  .metric-card .content h3 {
+    font-size: 1.25rem !important;
+    margin-bottom: 0px;
+  }
+
+  .metric-card .content label {
+    font-size: 0.65rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .metric-footer {
+    gap: 0.25rem !important;
+    flex-wrap: wrap;
+    align-items: baseline;
+  }
+
+  .footer-label {
+    font-size: 0.55rem !important;
+    opacity: 0.8;
   }
 }
 
@@ -636,12 +654,17 @@ button {
   }
 }
 
-/* Dashboard Page Header */
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 2rem;
+  width: 100%;
+}
+
+.header-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .welcome-text {
@@ -658,11 +681,12 @@ button {
 
 .page-title {
   margin: 0;
-  font-size: 2.25rem;
+  font-size: 2rem;
   font-weight: 950;
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  white-space: nowrap;
 }
 
 .title-primary {
@@ -674,13 +698,16 @@ button {
 }
 
 .date-badge {
-  padding: 0.75rem 1.25rem;
-  font-size: 0.8125rem;
-  font-weight: 750;
+  padding: 0.625rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
   color: var(--text-soft);
   background: white;
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
+  flex-shrink: 0;
+  margin-bottom: 5px;
+  /* Slight lift to align with title baseline */
 }
 
 /* Performance Comparison Widget */
@@ -784,15 +811,15 @@ button {
     align-items: flex-start;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
+    width: 100%;
   }
 
   .page-title {
     font-size: 1.5rem !important;
-    /* Smaller size for 1 line */
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     width: 100%;
+    display: flex;
+    flex-wrap: nowrap !important;
   }
 
   .date-badge {
