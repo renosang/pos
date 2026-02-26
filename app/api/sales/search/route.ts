@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
         if (!sale) return NextResponse.json({ success: false }, { status: 404 });
 
         return NextResponse.json({ success: true, sale });
-    } catch (err) {
+    } catch {
         return NextResponse.json({ success: false }, { status: 500 });
     }
 }
