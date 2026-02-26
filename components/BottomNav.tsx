@@ -7,14 +7,14 @@ import {
     LayoutDashboard,
     Receipt,
     Scan,
-    Package,
-    MoreHorizontal,
     Box,
+    MoreHorizontal,
+    Package,
+    Folder,
+    ClipboardCheck,
     Truck,
     Building2,
     TrendingUp,
-    Folder,
-    ClipboardCheck,
     X
 } from "lucide-react";
 
@@ -31,29 +31,21 @@ export default function BottomNav({ session }: { session: any }) {
     if (!session || !isMounted) return null;
 
     const navItems = [
-        { href: "/", icon: <LayoutDashboard size={24} />, label: "Tổng quan" },
-        { href: "/sales", icon: <Receipt size={24} />, label: "Hóa đơn" },
-        { href: "/pos", id: "scan", icon: <Scan size={28} />, label: "Quét mã" },
-        { href: "/inventory", icon: <Box size={24} />, label: "Tồn kho" },
+        { id: "home", href: "/", icon: <LayoutDashboard size={24} />, label: "Tổng quan" },
+        { id: "sales", href: "/sales", icon: <Receipt size={24} />, label: "Hóa đơn" },
+        { id: "scan", icon: <Scan size={28} />, label: "Quét mã" },
+        { id: "inventory", href: "/inventory", icon: <Box size={24} />, label: "Tồn kho" },
         { id: "more", icon: <MoreHorizontal size={24} />, label: "Thêm" },
     ];
 
-    const moreItems = [
-        { href: "/products", icon: <Package size={20} />, label: "Sản phẩm" },
-        { href: "/products/categories", icon: <Folder size={20} />, label: "Danh mục" },
-        { href: "/inventory/adjustment", icon: <ClipboardCheck size={20} />, label: "Kiểm kê" },
-        { href: "/purchases", icon: <Truck size={20} />, label: "Nhập hàng" },
-        { href: "/suppliers", icon: <Building2 size={20} />, label: "Nhà cung cấp" },
-        { href: "/reports", icon: <TrendingUp size={20} />, label: "Báo cáo" },
-    ];
-
-    // Determine the active index for the indicator
     const getActiveIndex = () => {
-        if (isMenuOpen) return 4; // "Thêm" is active
+        if (isMenuOpen) return 4;
         if (pathname === "/pos" || pathname.includes("/pos")) return 2;
         if (pathname === "/sales") return 1;
-        if (pathname === "/inventory") return 3;
-        if (pathname === "/") return 0;
+        if (pathname === "/inventory" || pathname.includes("/inventory")) return 3;
+        if (pathname === "/" || pathname === "/dashboard") return 0;
+        if (pathname.includes("/products")) return 3;
+        if (pathname.includes("/purchases")) return 4;
         return -1;
     };
 
@@ -82,7 +74,14 @@ export default function BottomNav({ session }: { session: any }) {
                         </button>
                     </div>
                     <div className="menu-grid">
-                        {moreItems.map((item) => (
+                        {[
+                            { href: "/products", icon: <Package size={20} />, label: "Sản phẩm" },
+                            { href: "/products/categories", icon: <Folder size={20} />, label: "Danh mục" },
+                            { href: "/inventory/adjustment", icon: <ClipboardCheck size={20} />, label: "Kiểm kê" },
+                            { href: "/purchases", icon: <Truck size={20} />, label: "Nhập hàng" },
+                            { href: "/suppliers", icon: <Building2 size={20} />, label: "Nhà cung cấp" },
+                            { href: "/reports", icon: <TrendingUp size={20} />, label: "Báo cáo" },
+                        ].map((item) => (
                             <Link
                                 key={item.href}
                                 href={item.href}
@@ -98,60 +97,46 @@ export default function BottomNav({ session }: { session: any }) {
             </div>
 
             <nav className="bottom-nav show-mobile">
-                {/* SVG Background with dynamic cutout */}
-                <div className="nav-background">
-                    <svg viewBox="0 0 100 30" preserveAspectRatio="none">
-                        <path
-                            d={activeIndex === -1 ? "M 0,30 L 0,10 L 100,10 L 100,30 Z" :
-                                `M 0,30 L 0,10 
-                                H ${activeIndex * 20 + 2}
-                                Q ${activeIndex * 20 + 5},10 ${activeIndex * 20 + 7},5
-                                C ${activeIndex * 20 + 8.5},2 ${activeIndex * 20 + 11.5},2 ${activeIndex * 20 + 13},5
-                                Q ${activeIndex * 20 + 15},10 ${activeIndex * 20 + 18},10
-                                H 100
-                                L 100,30 Z`}
-                            fill="white"
-                        />
-                    </svg>
-                </div>
+                <div className="nav-container">
+                    {/* SVG background centered to the container */}
+                    <div className="nav-bg-layer">
+                        <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+                            <path
+                                d={activeIndex === -1 ? "M 0,30 L 0,10 L 100,10 L 100,30 Z" :
+                                    `M 0,30 L 0,10 
+                                    H ${activeIndex * 20 + 2.5}
+                                    Q ${activeIndex * 20 + 5},10 ${activeIndex * 20 + 7},6
+                                    C ${activeIndex * 20 + 8.5},2 ${activeIndex * 20 + 11.5},2 ${activeIndex * 20 + 13},6
+                                    Q ${activeIndex * 20 + 15},10 ${activeIndex * 20 + 17.5},10
+                                    H 100
+                                    L 100,30 Z`}
+                                fill="white"
+                            />
+                        </svg>
+                    </div>
 
-                <div className="nav-items-container">
-                    {navItems.map((item, idx) => {
-                        const isActive = activeIndex === idx;
-                        const isScan = item.id === "scan";
+                    <div className="nav-links">
+                        {navItems.map((item, idx) => {
+                            const isActive = activeIndex === idx;
+                            const isScan = item.id === "scan";
 
-                        const content = (
-                            <div className="nav-item-content">
-                                <div className="icon-circle">
-                                    {item.icon}
-                                </div>
-                                <span className="nav-label">{item.label}</span>
-                            </div>
-                        );
-
-                        if (item.href && item.id !== "scan") {
                             return (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={`nav-item ${isActive ? 'active' : ''}`}
-                                    onClick={() => handleNavClick(item)}
-                                >
-                                    {content}
-                                </Link>
+                                <div key={item.id} className={`nav-slot ${isActive ? 'active' : ''}`}>
+                                    {item.href && !isScan ? (
+                                        <Link href={item.href} onClick={() => handleNavClick(item)} className="nav-link">
+                                            <div className="icon-box">{item.icon}</div>
+                                            <span className="label">{item.label}</span>
+                                        </Link>
+                                    ) : (
+                                        <button onClick={() => handleNavClick(item)} className="nav-link">
+                                            <div className="icon-box">{item.icon}</div>
+                                            <span className="label">{item.label}</span>
+                                        </button>
+                                    )}
+                                </div>
                             );
-                        }
-
-                        return (
-                            <button
-                                key={item.id || item.href}
-                                className={`nav-item ${isActive ? 'active' : ''} ${isScan ? 'scan-item' : ''}`}
-                                onClick={() => handleNavClick(item)}
-                            >
-                                {content}
-                            </button>
-                        );
-                    })}
+                        })}
+                    </div>
                 </div>
             </nav>
 
@@ -161,93 +146,102 @@ export default function BottomNav({ session }: { session: any }) {
                     bottom: 0;
                     left: 0;
                     right: 0;
-                    height: 80px;
+                    height: calc(75px + env(safe-area-inset-bottom));
                     z-index: 1000;
-                    background: transparent;
-                    padding-bottom: env(safe-area-inset-bottom);
+                    display: flex;
+                    justify-content: center;
+                    pointer-events: none;
                 }
 
-                .nav-background {
+                .nav-container {
+                    width: 100%;
+                    height: 100%;
+                    position: relative;
+                    pointer-events: auto;
+                }
+
+                .nav-bg-layer {
                     position: absolute;
                     top: 0;
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    filter: drop-shadow(0 -5px 15px rgba(0,0,0,0.08));
+                    filter: drop-shadow(0 -8px 20px rgba(0,0,0,0.06));
                 }
 
-                .nav-background svg {
+                .nav-bg-layer svg {
                     width: 100%;
                     height: 100%;
                 }
 
-                .nav-background path {
+                .nav-bg-layer path {
                     transition: d 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 }
 
-                .nav-items-container {
+                .nav-links {
                     display: grid;
                     grid-template-columns: repeat(5, 1fr);
                     height: 100%;
                     position: relative;
                     z-index: 2;
+                    padding-bottom: env(safe-area-inset-bottom);
                 }
 
-                .nav-item {
+                .nav-slot {
+                    display: flex;
+                    justify-content: center;
+                    align-items: flex-end;
+                    padding-bottom: 12px;
+                }
+
+                .nav-link {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    justify-content: flex-end;
                     background: none;
                     border: none;
-                    padding: 0 0 12px 0;
-                    position: relative;
+                    padding: 0;
+                    gap: 4px;
                     color: #94a3b8;
                     text-decoration: none;
                     transition: all 0.3s;
+                    width: 100%;
                 }
 
-                .nav-item-content {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 2px;
-                }
-
-                .icon-circle {
-                    width: 42px;
-                    height: 42px;
+                .icon-box {
+                    width: 44px;
+                    height: 44px;
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-                    position: relative;
-                    z-index: 5;
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    background: transparent;
                 }
 
-                .nav-item.active .icon-circle {
-                    transform: translateY(-35px);
+                .nav-slot.active .icon-box {
+                    transform: translateY(-38px);
                     background: var(--primary);
                     color: white;
                     box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
                 }
 
-                .scan-item.active .icon-circle {
+                .nav-slot:nth-child(3).active .icon-box {
                     background: linear-gradient(135deg, var(--primary), var(--accent));
                 }
 
-                .nav-label {
+                .label {
                     font-size: 0.65rem;
                     font-weight: 800;
                     transition: all 0.3s;
                     color: #64748b;
                 }
 
-                .nav-item.active .nav-label {
+                .nav-slot.active .label {
                     color: var(--primary);
+                    transform: translateY(-6px);
+                    opacity: 1;
                     font-weight: 900;
-                    transform: translateY(-2px);
                 }
 
                 /* More Menu */
@@ -291,7 +285,7 @@ export default function BottomNav({ session }: { session: any }) {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    margin-bottom: 2rem;
+                    margin-bottom: 2.5rem;
                 }
 
                 .menu-header h3 {
@@ -324,8 +318,8 @@ export default function BottomNav({ session }: { session: any }) {
                 }
 
                 .menu-icon {
-                    width: 58px;
-                    height: 58px;
+                    width: 60px;
+                    height: 60px;
                     border-radius: 20px;
                     background: var(--surface-secondary);
                     color: var(--text-main);
@@ -333,13 +327,12 @@ export default function BottomNav({ session }: { session: any }) {
                     align-items: center;
                     justify-content: center;
                     transition: 0.2s;
-                    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
                 }
 
                 .menu-item.active .menu-icon {
                     background: var(--primary);
                     color: white;
-                    box-shadow: 0 8px 15px rgba(99, 102, 241, 0.25);
+                    box-shadow: 0 8px 15px rgba(99, 102, 241, 0.2);
                 }
 
                 .menu-item span {
