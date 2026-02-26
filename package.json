@@ -1,0 +1,39 @@
+{
+  "name": "shop-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^3.0.31",
+    "@auth/prisma-adapter": "^2.11.1",
+    "@prisma/client": "^6.4.1",
+    "ai": "^4.1.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.3.1",
+    "html5-qrcode": "^2.3.8",
+    "lucide-react": "^0.575.0",
+    "next": "^15.1.0",
+    "next-auth": "^5.0.0-beta.30",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "recharts": "^3.7.0",
+    "zod": "^3.25.10"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@eslint/eslintrc": "^3.2.0",
+    "eslint": "^9",
+    "eslint-config-next": "^15.1.0",
+    "prisma": "^6.4.1",
+    "typescript": "^5"
+  }
+}

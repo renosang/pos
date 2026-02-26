@@ -1,0 +1,193 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  STAFF
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  password  String
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Sales     Sale[]
+  Purchases Purchase[]
+  Logs      ActivityLog[]
+}
+
+model Category {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String    @unique
+  products Product[]
+}
+
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  categoryId  String   @db.ObjectId
+  category    Category @relation(fields: [categoryId], references: [id])
+  brand       String?
+  description String?
+  images      Json? // Array of image URLs
+  skuCode     String?  @unique
+  status      String   @default("ACTIVE") // ACTIVE, ARCHIVED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  variants ProductVariant[]
+}
+
+model ProductVariant {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId    String   @db.ObjectId
+  product      Product  @relation(fields: [productId], references: [id])
+  barcode      String?
+  color        String?
+  size         String?
+  attributes   Json?    // Flexible properties like Year, Fabric, etc.
+  costPrice    Float
+  salePrice    Float
+  minStock     Int      @default(5)
+  location     String? // Shelf/Bin location
+  status       String   @default("ACTIVE")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  inventoryLedger InventoryLedger[]
+  saleItems       SaleItem[]
+  purchaseItems   PurchaseItem[]
+}
+
+model InventoryLedger {
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  productVariantId String         @db.ObjectId
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
+  changeQty        Int // + for import, - for export
+  balanceAfter     Int
+  type             String // SALE, PURCHASE, ADJUSTMENT, RETURN, LOSS
+  reason           String?
+  relatedId        String? // ID of Sale, Purchase, or StockAdjustment
+  createdAt        DateTime       @default(now())
+}
+
+model Customer {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  phone     String?  @unique
+  email     String?  @unique
+  address   String?
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sales Sale[]
+}
+
+model Supplier {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  phone           String?
+  bankAccountName String?
+  bankAccountNo   String?
+  bankName        String?
+  address         String?
+  note            String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  purchases Purchase[]
+}
+
+model Sale {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderCode     String   @unique
+  soldAt        DateTime @default(now())
+  userId        String   @db.ObjectId
+  user          User     @relation(fields: [userId], references: [id])
+  customerId    String?  @db.ObjectId
+  customer      Customer? @relation(fields: [customerId], references: [id])
+  channel       String   @default("OFFLINE") // OFFLINE, FACEBOOK, SHOPEE, ETC
+  paymentMethod String   @default("CASH") // CASH, TRANSFER, EWALLET, CARD
+  paymentStatus String   @default("PAID") // PAID, PARTIAL, UNPAID
+  subTotal      Float
+  discountType  String? // AMOUNT, PERCENT
+  discountValue Float    @default(0)
+  discountTotal Float    @default(0)
+  grandTotal    Float
+  cashReceived  Float?
+  changeReturn  Float?
+  transferRef   String?
+  note          String?
+  status        String   @default("COMPLETED") // COMPLETED, VOIDED, REFUNDED
+  refundedAt    DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items SaleItem[]
+}
+
+model SaleItem {
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  saleId           String         @db.ObjectId
+  sale             Sale           @relation(fields: [saleId], references: [id])
+  productVariantId String         @db.ObjectId
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
+  quantity         Int
+  unitPrice        Float
+  lineDiscount     Float          @default(0)
+  lineTotal        Float
+}
+
+model Purchase {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  purchaseCode  String   @unique
+  purchasedAt   DateTime @default(now())
+  supplierId    String   @db.ObjectId
+  supplier      Supplier @relation(fields: [supplierId], references: [id])
+  userId        String   @db.ObjectId
+  user          User     @relation(fields: [userId], references: [id])
+  invoiceNo     String?
+  paymentMethod String   @default("CASH")
+  paymentStatus String   @default("PAID")
+  shippingFee   Float    @default(0)
+  subTotal      Float
+  discountTotal Float    @default(0)
+  grandTotal    Float
+  note          String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items PurchaseItem[]
+}
+
+model PurchaseItem {
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  purchaseId       String         @db.ObjectId
+  purchase         Purchase       @relation(fields: [purchaseId], references: [id])
+  productVariantId String         @db.ObjectId
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
+  quantity         Int
+  unitCost         Float
+  lineTotal        Float
+}
+
+model ActivityLog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  module    String?
+  details   Json?
+  createdAt DateTime @default(now())
+}
