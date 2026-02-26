@@ -674,7 +674,7 @@ button {
 }
 
 .welcome-text {
-  font-size: 0.8rem;
+  font-size: clamp(0.75rem, 2vw, 0.8rem);
   color: var(--text-soft);
   font-weight: 500;
   margin-top: 0.25rem;
@@ -686,14 +686,15 @@ button {
 }
 
 .page-title {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 850;
+  font-size: clamp(1.5rem, 5vw, 1.75rem);
+  font-weight: 900;
+  color: var(--text-main);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
   display: flex;
   gap: 0.5rem;
   align-items: center;
   white-space: nowrap;
-  letter-spacing: -0.02em;
 }
 
 .title-primary {
@@ -709,7 +710,7 @@ button {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 0.75rem !important;
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 2vw, 0.85rem);
   font-weight: 800;
   color: var(--text-soft);
   background: white;
@@ -828,7 +829,7 @@ button {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
-    margin-bottom: 1.25rem !important;
+    margin-bottom: clamp(1rem, 4vw, 1.25rem) !important;
     width: 100%;
   }
 
@@ -844,7 +845,7 @@ button {
   }
 
   .page-title {
-    font-size: 1.5rem !important;
+    font-size: clamp(1.4rem, 6vw, 1.6rem) !important;
     white-space: nowrap;
     width: 100%;
     display: flex;
@@ -854,43 +855,43 @@ button {
 
   .welcome-text,
   .page-header p {
-    font-size: 0.75rem !important;
+    font-size: clamp(0.75rem, 2.5vw, 0.8rem) !important;
     margin-top: 0 !important;
     order: 2;
   }
 
   .date-badge {
-    padding: 0.5rem 0.75rem !important;
-    font-size: 0.75rem !important;
+    padding: clamp(0.4rem, 2vw, 0.6rem) clamp(0.6rem, 3vw, 0.75rem) !important;
+    font-size: clamp(0.7rem, 2.2vw, 0.8rem) !important;
     font-weight: 800 !important;
     order: 3;
     width: fit-content !important;
     margin-top: 0.25rem;
   }
 
-  /* Global Typography Reductions for Mobile */
+  /* Fluid Typography for Common Elements */
   .btn {
-    padding: 0.5rem 1rem !important;
-    font-size: 0.8rem !important;
+    padding: clamp(0.4rem, 1.5vw, 0.6rem) clamp(0.75rem, 3vw, 1.25rem) !important;
+    font-size: clamp(0.75rem, 2.2vw, 0.85rem) !important;
   }
 
   .input {
-    padding: 0.625rem 0.875rem !important;
-    font-size: 0.85rem !important;
+    padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 3vw, 1rem) !important;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem) !important;
   }
 
   table th {
-    padding: 0.75rem 0.5rem !important;
-    font-size: 0.7rem !important;
+    padding: clamp(0.5rem, 2vw, 1rem) clamp(0.25rem, 1.5vw, 0.5rem) !important;
+    font-size: clamp(0.65rem, 2vw, 0.75rem) !important;
   }
 
   table td {
-    padding: 0.75rem 0.5rem !important;
-    font-size: 0.8rem !important;
+    padding: clamp(0.5rem, 2vw, 1rem) clamp(0.25rem, 1.5vw, 0.5rem) !important;
+    font-size: clamp(0.75rem, 2.2vw, 0.85rem) !important;
   }
 
   .glass-card {
-    padding: 1rem !important;
+    padding: clamp(0.75rem, 3vw, 1.5rem) !important;
   }
 }
 
