@@ -756,7 +756,7 @@ export default function POSClient({ products, userId }: { products: any[], userI
                     .qty-control span { font-size: 0.75rem; }
                     .qty-control button { width: 22px; height: 22px; font-size: 0.7rem; }
                     
-                    .floating-cart-btn { padding: 10px 18px; bottom: 100px; right: 15px; }
+                    .floating-cart-btn { padding: 10px 18px; bottom: 200px; right: 15px; }
                     .cart-amount { font-size: 0.85rem; padding-left: 10px; }
                     .cart-badge { width: 20px; height: 20px; font-size: 0.65rem; }
                 }
