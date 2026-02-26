@@ -20,9 +20,10 @@ export default function POSClient({ products, userId }: { products: any[], userI
         if (found) {
             addToCart(found);
             setShowScanner(false);
-            alert(`Đã thêm: ${found.productName}`);
+            // subtle feedback instead of alert would be better, but keeping consistency for now or using a console log
+            console.log(`Đã thêm: ${found.productName}`);
         } else {
-            alert(`Không tìm thấy mã: ${barcode}`);
+            console.warn(`Không tìm thấy mã: ${barcode}`);
         }
     };
 

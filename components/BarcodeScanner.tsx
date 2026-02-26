@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 
 interface BarcodeScannerProps {
     onScanSuccess: (decodedText: string) => void;
@@ -18,70 +18,166 @@ export default function BarcodeScanner({
     qrbox = 250,
     active = true
 }: BarcodeScannerProps) {
-    const scannerRef = useRef<Html5QrcodeScanner | null>(null);
     const [isMounted, setIsMounted] = useState(false);
+    const [cameraError, setCameraError] = useState<string | null>(null);
+    const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
+    const isTransitioningRef = useRef(false);
 
     useEffect(() => {
         setIsMounted(true);
-        return () => setIsMounted(false);
+        return () => {
+            setIsMounted(false);
+            if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning && !isTransitioningRef.current) {
+                isTransitioningRef.current = true;
+                html5QrCodeRef.current.stop()
+                    .catch(console.error)
+                    .finally(() => { isTransitioningRef.current = false; });
+            }
+        };
     }, []);
 
     useEffect(() => {
-        if (!isMounted || !active) {
-            if (scannerRef.current) {
-                scannerRef.current.clear().catch(console.error);
-                scannerRef.current = null;
-            }
-            return;
-        }
+        if (!isMounted) return;
 
-        const scanner = new Html5QrcodeScanner(
-            "reader",
-            { fps, qrbox, aspectRatio: 1.0 },
-            false
-        );
+        const startScanner = async () => {
+            if (isTransitioningRef.current) return;
 
-        scanner.render(
-            (decodedText) => {
-                onScanSuccess(decodedText);
-            },
-            (errorMessage) => {
-                if (onScanError) onScanError(errorMessage);
-            }
-        );
+            try {
+                if (!html5QrCodeRef.current) {
+                    html5QrCodeRef.current = new Html5Qrcode("reader");
+                }
 
-        scannerRef.current = scanner;
+                if (active) {
+                    if (html5QrCodeRef.current.isScanning) {
+                        isTransitioningRef.current = true;
+                        await html5QrCodeRef.current.stop();
+                        isTransitioningRef.current = false;
+                    }
 
-        return () => {
-            if (scannerRef.current) {
-                scannerRef.current.clear().catch(console.error);
-                scannerRef.current = null;
+                    const config = {
+                        fps,
+                        qrbox: { width: qrbox, height: qrbox },
+                        aspectRatio: 1.0,
+                        formatsToSupport: [
+                            Html5QrcodeSupportedFormats.EAN_13,
+                            Html5QrcodeSupportedFormats.EAN_8,
+                            Html5QrcodeSupportedFormats.UPC_A,
+                            Html5QrcodeSupportedFormats.UPC_E,
+                            Html5QrcodeSupportedFormats.CODE_128,
+                            Html5QrcodeSupportedFormats.CODE_39,
+                            Html5QrcodeSupportedFormats.QR_CODE
+                        ]
+                    };
+
+                    isTransitioningRef.current = true;
+                    await html5QrCodeRef.current.start(
+                        { facingMode: "environment" },
+                        config,
+                        (decodedText) => {
+                            onScanSuccess(decodedText);
+                        },
+                        (errorMessage) => {
+                            if (onScanError && !errorMessage.includes("NotFoundException")) {
+                                onScanError(errorMessage);
+                            }
+                        }
+                    );
+                    setCameraError(null);
+                    isTransitioningRef.current = false;
+                } else {
+                    if (html5QrCodeRef.current.isScanning) {
+                        isTransitioningRef.current = true;
+                        await html5QrCodeRef.current.stop();
+                        isTransitioningRef.current = false;
+                    }
+                }
+            } catch (err: any) {
+                console.error("Camera scanner error:", err);
+                isTransitioningRef.current = false;
+                if (!err.message?.includes("already under transition")) {
+                    setCameraError(err.message || "Không thể mở camera. Vui lòng kiểm tra quyền truy cập.");
+                    if (onScanError) onScanError(err.message);
+                }
             }
         };
-    }, [isMounted, active, onScanSuccess, onScanError, fps, qrbox]);
+
+        startScanner();
+
+        return () => {
+            if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning && !isTransitioningRef.current) {
+                isTransitioningRef.current = true;
+                html5QrCodeRef.current.stop()
+                    .catch(console.error)
+                    .finally(() => { isTransitioningRef.current = false; });
+            }
+        };
+    }, [isMounted, active, fps, qrbox, onScanSuccess, onScanError]);
 
     return (
         <div className="scanner-container">
-            <div id="reader" style={{ width: '100%', maxWidth: '500px', margin: '0 auto', borderRadius: '12px', overflow: 'hidden' }}></div>
+            <div id="reader" className="scanner-view"></div>
+            {cameraError && (
+                <div className="camera-error">
+                    <span className="error-icon">⚠️</span>
+                    <p>{cameraError}</p>
+                    <button onClick={() => window.location.reload()} className="retry-btn">
+                        Thử lại
+                    </button>
+                </div>
+            )}
             <style jsx>{`
                 .scanner-container {
                     width: 100%;
-                    padding: 1rem;
-                    background: var(--background);
-                    border-radius: 12px;
-                    border: 1px solid var(--surface-border);
+                    max-width: 500px;
+                    margin: 0 auto;
+                    position: relative;
+                    background: #000;
+                    border-radius: 16px;
+                    overflow: hidden;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
                 }
-                #reader__scan_region {
-                    background: white !important;
+                .scanner-view {
+                    width: 100%;
+                    min-height: 300px;
                 }
-                #reader__dashboard_section_csr button {
-                    background: var(--primary) !important;
-                    color: white !important;
-                    border: none !important;
-                    padding: 8px 16px !important;
-                    border-radius: 8px !important;
-                    font-weight: 600 !important;
-                    cursor: pointer !important;
+                .camera-error {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0,0,0,0.8);
+                    color: white;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem;
+                    text-align: center;
+                    z-index: 10;
+                }
+                .error-icon {
+                    font-size: 2.5rem;
+                    margin-bottom: 1rem;
+                }
+                .retry-btn {
+                    margin-top: 1rem;
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    padding: 8px 24px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                }
+                /* Hide default html5-qrcode UI elements if any leak through */
+                #reader__dashboard_section_csr, 
+                #reader__status_span {
+                    display: none !important;
+                }
+                video {
+                    object-fit: cover !important;
+                    border-radius: 16px;
                 }
             `}</style>
         </div>
