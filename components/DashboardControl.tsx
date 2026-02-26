@@ -17,6 +17,15 @@ export default function DashboardControl({ data }: { data: any }) {
         lowStockCount, recentActivities
     } = data;
 
+    const [isMobile, setIsMobile] = React.useState(false);
+
+    React.useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     const formatCurrency = (val: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
 
     const calcGrowth = (current: number, previous: number) => {
@@ -99,7 +108,7 @@ export default function DashboardControl({ data }: { data: any }) {
                         </div>
                     </div>
                     <div className="chart-body">
-                        <ResponsiveContainer width="100%" height={340}>
+                        <ResponsiveContainer width="100%" height={isMobile ? 220 : 340}>
                             <AreaChart data={hourlyHistory} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="colorToday" x1="0" y1="0" x2="0" y2="1">
@@ -139,7 +148,7 @@ export default function DashboardControl({ data }: { data: any }) {
                         </div>
                     </div>
                     <div className="chart-body">
-                        <ResponsiveContainer width="100%" height={340}>
+                        <ResponsiveContainer width="100%" height={isMobile ? 220 : 340}>
                             <BarChart data={hourlyHistory} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
                                 <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--text-muted)' }} interval={1} />

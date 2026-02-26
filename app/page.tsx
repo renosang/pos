@@ -11,7 +11,9 @@ export default async function DashboardPage() {
       <header className="page-header">
         <div className="header-content">
           <p className="welcome-text">Chào mừng trở lại, <span>{session?.user?.name || "Quản trị viên"}</span> 👋</p>
-          <h1 className="page-title">Trung tâm Điều hành</h1>
+          <h1 className="page-title">
+            <span className="title-primary">Trung tâm</span> <span className="title-accent">Điều hành</span>
+          </h1>
         </div>
         <div className="date-badge glass-card">
           📅 {new Date().toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
